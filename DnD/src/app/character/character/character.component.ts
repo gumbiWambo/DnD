@@ -77,7 +77,6 @@ export class CharacterComponent implements OnInit {
   }
   public spells: Spell[] = [];
   public spellSearchTerm = '';
-  private socket: BehaviorSubject<any>;
   constructor(private characterProvider: CharacterService, private spellProvider: SpellsService) { 
     this.characterProvider.character.subscribe(x => {
       this.character = x;

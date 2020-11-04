@@ -70,8 +70,8 @@ export class Connection{
     this.socket.on('message', (data: string) => {
       const commandFromSocket = JSON.parse(data);
       switch(commandFromSocket.command) {
-        case 'useEquipment': this.useEquipment(commandFromSocket.payload);
-        break;
+        case 'useEquipment': this.useEquipment(commandFromSocket.payload); break;
+        case 'updateCurrency': this.updateCurrency(commandFromSocket.payload.currency, commandFromSocket.payload.value); break;
         default: break;
       }
     });
@@ -93,6 +93,21 @@ export class Connection{
       }
       this.sendCharacter();
     }
+  }
+  private updateCurrency(currency: string, value: number): void {
+    let currencyUpdate: Promise<Character> = Promise.reject('woops');
+    switch(currency) {
+      case 'gold': currencyUpdate = this.database.updateGold(this.playerName, this.character.name, value); break;
+      case 'copper': currencyUpdate = this.database.updateCopper(this.playerName, this.character.name, value); break;
+      case 'silver': currencyUpdate = this.database.updateSilver(this.playerName, this.character.name, value); break;
+      case 'platin': currencyUpdate = this.database.updatePlatin(this.playerName, this.character.name, value); break;
+      case 'electrum': currencyUpdate = this.database.updateElectrum(this.playerName, this.character.name, value); break;
+      default: this.sendCharacter();
+    }
+    currencyUpdate.then(x => {
+      this.character = x;
+      this.sendCharacter();
+    }).catch((x) => console.log(x));
   }
   private sendCharacter() {
     this.socket.send(JSON.stringify(this.character));

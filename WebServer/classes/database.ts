@@ -28,6 +28,7 @@ export class Database {
       });
     });
   }
+
   getSpells(): Promise<Spell[]> {
     return new Promise((resolve, reject) => {
       db.serialize(() => {
@@ -42,7 +43,8 @@ export class Database {
       });
     });
   }
-  getCharacter(playerName: string): Promise<Character> {
+
+  public getCharacter(playerName: string): Promise<Character> {
     return new Promise((resolve, reject) => {
       if(!this.isSecureStirng(playerName)) {
         reject('Injection warning!');
@@ -116,6 +118,46 @@ export class Database {
     });
   }
 
+  public updateGold(playerName: string, characterName: string, gold: number): Promise<Character> {
+    return this.updateCurrency(playerName, characterName, 'GoldPieces', gold);
+  }
+
+  public updateSilver(playerName: string, characterName: string, silver: number): Promise<Character> {
+    return this.updateCurrency(playerName, characterName, 'SilverPieces', silver);
+  }
+
+  public updateCopper(playerName: string, characterName: string, copper: number): Promise<Character> {
+    return this.updateCurrency(playerName, characterName, 'CopperPieces', copper);
+  }
+
+  public updatePlatin(playerName: string, characterName: string, platin: number): Promise<Character> {
+    return this.updateCurrency(playerName, characterName, 'PlatinPieces', platin);
+  }
+
+  public updateElectrum(playerName: string, characterName: string, electrum: number): Promise<Character> {
+    return this.updateCurrency(playerName, characterName, 'ElectrumPieces', electrum);
+  }
+  private updateCurrency(playerName: string, characterName: string, currency: string, value: number): Promise<Character> {
+    return new Promise<Character>(async (resolve, reject) => {
+      console.log(playerName, characterName, currency, value, this.isSecureStirng(currency), this.isSecureStirng(playerName), this.isSecureStirng(characterName));
+      if(playerName && characterName && currency && !Number.isNaN(Number(value)) && this.isSecureStirng(currency) && this.isSecureStirng(playerName) && this.isSecureStirng(characterName)){
+        db.run(`UPDATE Character SET ${currency} = ${Number(value)}
+        WHERE Player IN ( SELECT Player.Key FROM Player WHERE Player.Name = '${playerName}') AND Character.Name = '${characterName}'`,(error: any) => {
+          if(error){
+            console.error(error);
+            reject(!!error);
+          }
+          this.getCharacter(playerName).then(x => {
+            resolve(x);
+          });
+        });
+      } else {
+        reject('Parameters Invalid');
+      }
+    });
+  }
+  
+
   private isSecureStirng(guess: string): boolean {
     return !(guess.includes(';') || guess.includes('--') || guess.includes('DROP'));
   }
@@ -185,6 +227,7 @@ export class Database {
       }
     };
   }
+  
   private getProficiencyBonus(experience: number): number {
     if(experience < 2700) {
       return 2;
