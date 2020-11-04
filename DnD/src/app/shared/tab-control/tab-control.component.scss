@@ -1,0 +1,26 @@
+@import '../../../variables.scss';
+:host{
+  .tabContent{
+    overflow-y: auto;
+    height: calc(100% - 28px);
+    ::ng-deep *{
+      color: white;
+    }
+  }
+  .tabButtonGroup{
+    display: flex;
+    flex-direction: row;
+    // justify-content: center;
+    flex-grow: 1;
+    button{
+      background-color: $dnd-main-color;
+      color: white;
+      border: none;
+      height: 28px;
+      border-bottom: solid transparent 1px;
+      &.selected{
+        border-bottom-color: white;
+      }
+    }
+  }
+}

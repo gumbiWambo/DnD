@@ -1,0 +1,36 @@
+{
+  "watch": {
+    "buildStart": {
+      "patterns": [
+        "server.ts"
+      ],
+      "extensions": "ts,html,scss",
+      "quiet": false
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node ./dist/server/server.js",
+    "buildStart": "npm run build & npm run start",
+    "watch": "npm run buildStart",
+    "start:dev": "ts-node-dev server.ts"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "sqlite3": "^4.1.0",
+    "web-push": "^3.4.4",
+    "ws": "^7.1.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.1",
+    "@types/node": "^14.0.1",
+    "@types/ws": "^6.0.3",
+    "eslint": "^7.0.0",
+    "eslint-plugin-import": "^2.20.2",
+    "nodemon": "^2.0.4",
+    "ts-node": "^8.10.1",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.9.2"
+  }
+}

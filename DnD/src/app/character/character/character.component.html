@@ -1,0 +1,29 @@
+<dnd-header [name]="character.name" [playerName]="character.player" [background]="character.background"
+  [dndClass]="character.class" [race]="character.race" [alignment]="character.alignment"
+  [experience]="character.experience">
+</dnd-header>
+<dnd-tab-control>
+  <div dndTab="Stats">Tab1</div>
+  <div dndTab="Equipment">
+    <dnd-equipment *ngFor="let equipment of character.equipment" [name]="equipment.name" [amount]="equipment.amount"
+      [description]="equipment.description" (use)="useEquipment($event)"></dnd-equipment>
+  </div>
+  <div dndTab="Skills/Attributes">
+    <div>
+      <div>
+        <dnd-ability abilityName="Strength" [abilityScore]="character.strengthScore"></dnd-ability>
+        <dnd-ability abilityName="Dexterity" [abilityScore]="character.dexterityScore"></dnd-ability>
+        <dnd-ability abilityName="Constitution" [abilityScore]="character.constitutionScore"></dnd-ability>
+        <dnd-ability abilityName="Intelligence" [abilityScore]="character.intelligenceScore"></dnd-ability>
+        <dnd-ability abilityName="Wisdom" [abilityScore]="character.wisdomScore"></dnd-ability>
+        <dnd-ability abilityName="Charisma" [abilityScore]="character.charismaScore"></dnd-ability>
+      </div>
+      <dnd-skills></dnd-skills>
+        <dnd-saving-thorws></dnd-saving-thorws>
+    </div>
+  </div>
+  <div dndTab="Spells">
+    <input type="text" placeholder="Search for a spell..." [(ngModel)]="spellSearchTerm">
+    <dnd-spelllist [spells]="spells | spellSearch :spellSearchTerm"></dnd-spelllist>
+  </div>
+</dnd-tab-control>

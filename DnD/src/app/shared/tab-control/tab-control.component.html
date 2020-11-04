@@ -1,0 +1,6 @@
+<div class="tabButtonGroup">
+  <button *ngFor="let tab of tabs; let i = index" (click)="showTab(i)" [ngClass]="{selected: i === selectedIndex}">{{tab.dndTab}}</button>
+</div>
+<div class="tabContent">
+  <ng-content></ng-content>
+</div>

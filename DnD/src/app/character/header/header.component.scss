@@ -1,0 +1,21 @@
+:host{
+  display: flex;
+  justify-content: space-between;
+  *{
+    color: white;
+  }
+}
+.characterMetaData{
+  display: inline-flex;
+}
+.field{
+  margin-left: 5px;
+  margin-right: 5px;
+}
+p{
+  margin-bottom: 0px;
+}
+.discription{
+  font-size: 12px;
+  margin-top: 0px;
+}
