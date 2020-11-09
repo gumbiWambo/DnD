@@ -8,7 +8,7 @@ import { Spell } from 'src/app/interfaces/spell';
 })
 export class SpellComponent implements OnInit {
   @Input() spell: Spell;
-
+  @Input() open = false;
   constructor() { }
 
   ngOnInit(): void {

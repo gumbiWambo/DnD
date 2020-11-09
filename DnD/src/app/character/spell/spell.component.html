@@ -1,10 +1,12 @@
 <div *ngIf="!!spell">
-  <h2>{{spell.name}}</h2>
-  <p>Level: {{spell.level}}</p>
-  <p>Type: {{spell.type}}</p>
-  <p>Casting Time: {{spell.castingTime}}</p>
-  <p>Components: {{spell.components}}</p>
-  <p>Duration: {{spell.duration}}</p>
-  <p>Range: {{spell.range}}</p>
-  <p [innerHTML]="spell.discription"></p>
+  <h2 (click)="open = !open">{{spell.name}}</h2>
+  <div *ngIf="!!open">
+    <p>Level: {{spell.level}}</p>
+    <p>Type: {{spell.type}}</p>
+    <p>Casting Time: {{spell.castingTime}}</p>
+    <p>Components: {{spell.components}}</p>
+    <p>Duration: {{spell.duration}}</p>
+    <p>Range: {{spell.range}}</p>
+    <p class="discription" [innerHTML]="spell.discription"></p>
+  </div>
 </div>

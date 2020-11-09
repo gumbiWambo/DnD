@@ -16,4 +16,7 @@ export class SpellsService {
   public getSpells(): Promise<Spell[]> {
     return this.http.get<Spell[]>(environment.serverUrl + '/spells').pipe(tap((x) => this.spells.next(x))).toPromise();
   }
+  public createSpell(body: any): Promise<any> {
+    return this.http.post(environment.serverUrl + '/spells', body, {responseType: 'text'}).toPromise();
+  }
 }

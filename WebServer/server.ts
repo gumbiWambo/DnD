@@ -43,8 +43,16 @@ app.post('/player', (req, res) => {
 });
 app.get('/spells', (req, res) => {
   database.getSpells().then(x => {
-    res.send(JSON.stringify(x)).sendStatus(200);
+    res.send(JSON.stringify(x.sort((a, b) => a.name > b.name? 1 : -1))).sendStatus(200);
   }).catch(() => res.sendStatus(500));
+});
+app.post('/spells', (req, res) => {
+  database.insertSpell(req.body.name, req.body.level, req.body.type, req.body.castingTime, req.body.components, req.body.duration, req.body.discription, req.body.range).catch(() => {
+    res.sendStatus(500);
+  }).then(() => {
+    console.log('woop');
+    res.sendStatus(200);
+  });
 });
 app.get('/map/:name', (req, res) => {
   try{

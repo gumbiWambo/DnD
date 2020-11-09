@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 export class PlayerService {
   constructor(private http: HttpClient) { }
 
-  public createNewPlayer(name: string) {
-    this.http.post(environment.serverUrl + '/player', {name}, {responseType: 'text'}).toPromise();
+  public createNewPlayer(name: string): Promise<any> {
+    return this.http.post(environment.serverUrl + '/player', {name}, {responseType: 'text'}).toPromise();
   }
 }
