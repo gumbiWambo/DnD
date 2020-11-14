@@ -1,0 +1,86 @@
+
+:host{
+  height: 100%;
+  width: 100%;
+  &.square{
+    position: relative;
+    canvas{
+      position: absolute;
+      top: 0;
+      left: 0;
+      border: 1px black solid;
+    }
+    div{
+      display: grid;
+      grid-template-rows: repeat(var(--mapRows), 50px);
+      grid-template-columns: repeat(var(--mapCols), 50px);
+    }
+  }
+  &.hex {
+    div {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      overflow: auto;
+    }
+    g:nth-child(even) {
+      transform: translateY(50px);
+  
+    }
+    polygon {
+      stroke-width: 3px;
+      stroke: black;
+      transform: rotate(90deg);
+    }
+    .empty {
+      fill: white
+    }
+    .ocean{
+      fill: #069;
+    }
+    .sea{
+      fill: #9cf;
+    }
+    .grass {
+      fill: #e7f79c;
+    }
+    .evergreen {
+      fill: #39912d;
+    }
+    .evergreen-heavy{
+      fill: #2f7621;
+    }
+    .evergreen-hills {
+      fill: #488a21;
+    }
+    .evergreen-mountains{
+      fill: #667621;
+    }
+    .forest {
+      fill: #95c663;
+    }
+    .heavy-forest {
+      fill: #7aad43;
+    }
+    .forest-hills {
+      fill:#8ebd52;
+    }
+    .mountains-snow {
+      fill: #c68f00;
+    }
+    .mountains {
+      fill: #b28000;
+    }
+    .beach {
+      fill: #fff899;
+    }
+    .jungle {
+      fill: #4d8f5a;
+    }
+    .jungle-hills {
+        fill: #468552;
+    }
+  }
+}

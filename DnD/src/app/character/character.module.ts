@@ -15,6 +15,7 @@ import { ScorePipe } from './score.pipe';
 import { NumberToStringPipe } from './number-to-string.pipe';
 import { SkillComponent } from './skills/skill/skill.component';
 import { SavingThorwsComponent } from './saving-thorws/saving-thorws.component';
+import { MapModule } from '../map/map.module';
 
 
 
@@ -23,6 +24,7 @@ import { SavingThorwsComponent } from './saving-thorws/saving-thorws.component';
   imports: [
     CommonModule,
     SharedModule,
+    MapModule,
     FormsModule
   ],
   exports: [

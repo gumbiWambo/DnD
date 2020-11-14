@@ -3,7 +3,7 @@ import { Character } from '../interfaces/character';
 import { Equipment } from '../interfaces/equipment';
 import { Database } from './database';
 
-export class Connection{
+export class CharacterConnection{
   public playerName: string = '';
   public socket: WebSocket;
   private database = Database.getInstance();

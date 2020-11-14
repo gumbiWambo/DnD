@@ -34,8 +34,6 @@ export class Database {
         db.run(`INSERT INTO Spells (Name, Level, Type, CastingTime, Components, Duration, Discription, Range)
                 VALUES ("${name}", ${level}, "${type}", "${castingTime}", "${components}", "${duration}", "${disctiption}", "${range}")`, (error: any) => {
           if (error) {
-            console.log('database', disctiption);
-            console.log(error);
             reject(error);
           } else {
             resolve();
@@ -182,6 +180,65 @@ export class Database {
   }
 
   private toCharacter(row: any): Character {
+    if(!row) {
+      return {
+        name: '',
+        player: '',
+        class: '',
+        race: '',
+        background: '',
+        alignment: '',
+        experience: 0,
+        armorclass: 0,
+        initiative: 0,
+        speed: 0,
+        hitpointMaximum: 0,
+        strengthScore: 0,
+        dexterityScore: 0,
+        constitutionScore: 0,
+        intelligenceScore: 0,
+        wisdomScore: 0,
+        charismaScore: 0,
+        copperPieces: 0,
+        siverPieces: 0,
+        electrumPieces: 0,
+        goldPieces: 0,
+        platinPieces: 0,
+        inspiration: false,
+        spellcastingAbility: '',
+        spellAttackBonus: 0,
+        proficiencyBonus: 0,
+        equipment: [],
+        proficiencys: {
+          acrobatics: false,
+          animalHandling: false,
+          arcana: false,
+          athletics: false,
+          deception: false,
+          history: false,
+          insight: false,
+          intimidation: false,
+          investigation: false,
+          medicine: false,
+          nature: false,
+          perception: false,
+          performance: false,
+          persuasion: false,
+          religion: false,
+          sleightOfHand: false,
+          stealth: false,
+          survival: false
+        },
+        savingThrows: {
+          strength: false,
+          dexterity: false,
+          constitution: false,
+          intelligence: false,
+          wisdom: false,
+          charisma: false
+        },
+      };
+    }
     return {
       name: row.Name,
       class: row.Class,

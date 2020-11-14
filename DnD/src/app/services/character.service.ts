@@ -111,11 +111,10 @@ export class CharacterService {
   public socket: BehaviorSubject<any>;
   private socketSubsciptions: Subscription[] = [];
   constructor(private webSocket: WebsocketService) {
-    this.connect('Carlo');
   }
   public connect(playerName: string) {
     this.socket = this.webSocket.connect(environment.socketUrl + '?player=' + playerName);
-    const character = this.socket.pipe(map(x => JSON.parse(x.data)), tap(console.log), share())
+    const character = this.socket.pipe(map(x => JSON.parse(x.data)), share())
     character.subscribe(
       next => {
         this.character.next(next);

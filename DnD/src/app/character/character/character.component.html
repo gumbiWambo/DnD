@@ -26,4 +26,7 @@
     <input type="text" placeholder="Search for a spell..." [(ngModel)]="spellSearchTerm">
     <dnd-spelllist [spells]="spells | spellSearch :spellSearchTerm"></dnd-spelllist>
   </div>
+  <div dndTab="map">
+    <dnd-map></dnd-map>
+  </div>
 </dnd-tab-control>

@@ -3,15 +3,19 @@ import * as http from 'http';
 import * as WebSocket from 'ws';
 import * as bodyParser from 'body-parser';
 import { Database } from './classes/database';
-import { Connection } from './classes/connection';
+import { CharacterConnection } from './classes/character-connection';
+import { DrawConnectionMagager } from './classes/draw-connection-manager';
+import { DrawConnection } from './classes/draw-connection';
 
 const app = express();
 const server = http.createServer(app);
 const tradeServer = http.createServer();
+const drawServer = http.createServer();
 const wssCharacter = new WebSocket.Server({server});
 const wssTrade = new WebSocket.Server({server: tradeServer});
 const database = Database.getInstance();
-const characterConnections: Connection[] = [];
+const drawManager = DrawConnectionMagager.getInstance();
+const characterConnections: CharacterConnection[] = [];
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -20,9 +24,14 @@ app.use(function(req, res, next) {
 });
 app.use(bodyParser.json());
 wssCharacter.on('connection', (ws: WebSocket, request) => {
-  const playerName = request.url?.split('?player=')[1];
-  if(!isValid(request)) {
-    ws.close();
+  const queryParams = getQueryParams(request.url);
+  const playerName = queryParams.player;
+  if(!isValid(playerName)) {
+    if(queryParams.color) {
+      drawManager.addConnection(new DrawConnection(playerName, queryParams.color, ws));
+    } else {
+      ws.close();
+    }
   }
   if(playerName) {
     createPlayerConnection(playerName, ws);
@@ -68,13 +77,13 @@ server.listen(1337, '0.0.0.0', () => {
 });
 tradeServer.listen(8080, '0.0.0.0', () => {
   console.log(`Trade Server started on port ${JSON.stringify(tradeServer.address())}`);
-})
+});
+
 
 /*
  Helper Functions
 */
-function isValid(request: http.IncomingMessage): boolean {
-  const playerName = request.url?.split('?player=')[1];
+function isValid(playerName: string): boolean {
   const existingConnection = characterConnections.find(x => x.playerName === playerName);
   return !existingConnection;
 }
@@ -82,5 +91,15 @@ function createPlayerConnection(playerName: string, ws: WebSocket) {
   ws.on('close', () => {
     characterConnections.splice(characterConnections.findIndex(x => x.playerName === playerName), 1);
   });
-  characterConnections.push(new Connection(playerName, ws));
+  characterConnections.push(new CharacterConnection(playerName, ws));
+}
+function getQueryParams(url: string | undefined): any {
+  const rawQueryParams = url?.split('?')[1];
+  const queryParams = rawQueryParams?.split('&');
+  const returnObject: any = {}
+  queryParams?.forEach(x => {
+    const [key, value] = x.split('=');
+    returnObject[key] = value;
+  });
+  return returnObject
 }
