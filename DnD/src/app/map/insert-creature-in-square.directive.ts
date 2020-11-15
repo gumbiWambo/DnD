@@ -18,7 +18,7 @@ export class InsertCreatureInSquareDirective {
         this.insertCreature(creaturePosition.color);
       }
     });
-    this.map.creaturePositions.next([{x: 1, y: 3, color: 'black'}, {x: 2, y: 8, color: 'green'}])
+    // this.map.creaturePositions.next([{x: 1, y: 3, color: 'black'}, {x: 2, y: 8, color: 'green'}])
   }
 
   ngOnInit() {

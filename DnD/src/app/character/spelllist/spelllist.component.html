@@ -1,4 +1,4 @@
-<button (click)="dialogIsOpened = true">Create Spell</button>
+<!-- <button (click)="dialogIsOpened = true">Create Spell</button> -->
 <dnd-dialog [dialogTitle]="'Create Spell'" *ngIf="dialogIsOpened">
   <div content style="background-color: black;">
     <form #newSpell="ngForm" (ngSubmit)="submit(newSpell)">
