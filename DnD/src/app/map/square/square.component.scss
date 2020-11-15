@@ -1,0 +1,22 @@
+:host{
+  box-sizing: border-box;
+  border: 1px solid black;
+  position: relative;
+  img{
+    height: 100%;
+    width: 100%;
+  }
+  div.creatureContainer{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    >div{
+      height: 100%;
+      width: 100%;
+      border-radius: 50%;
+    }
+  }
+
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'dnd-square',
@@ -7,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SquareComponent implements OnInit {
 
-  constructor() { }
+  @Input() type: string = 'dungonGround';
+
+  constructor(public element: ElementRef) { }
 
   ngOnInit(): void {
   }

@@ -11,6 +11,7 @@
       border: 1px black solid;
     }
     div{
+      position: relative;
       display: grid;
       grid-template-rows: repeat(var(--mapRows), 50px);
       grid-template-columns: repeat(var(--mapCols), 50px);

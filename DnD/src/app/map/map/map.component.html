@@ -1,13 +1,14 @@
+<button (click)="drawMode = !drawMode">Toggle Drawmode</button>
 <div>
   <ng-template [ngIf]="!isHex" [ngIfElse]="hex">
   
-    <ng-template ngFor let-item [ngForOf]="map">
-      <ng-template  ngFor let-x [ngForOf]="item">
-        <dnd-square></dnd-square>
+    <ng-template ngFor let-item [ngForOf]="map" let-i="index">
+      <ng-template  ngFor let-x [ngForOf]="item" let-j="index">
+        <dnd-square [type]="x" dndInsertCreatureInSquare [x]="j" [y]="i"></dnd-square>
       </ng-template>
     </ng-template>
   </ng-template>
-  <canvas dndDraw [xAmount]="map.length" [yAmount]="map[0].length"></canvas>
+  <canvas *ngIf="drawMode" dndDraw [xAmount]="map.length" [yAmount]="map[0].length"></canvas>
 </div>
 
 

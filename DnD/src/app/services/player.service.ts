@@ -9,16 +9,19 @@ import { DrawService } from './draw.service';
 })
 export class PlayerService {
   public playerName: string;
-  constructor(private http: HttpClient, private character: CharacterService, private draw: DrawService) { }
+  constructor(private http: HttpClient, private character: CharacterService, private draw: DrawService) {
+    this.playerName = localStorage.getItem('player');
+    this.connect(this.playerName, localStorage.getItem('playerColor'));
+  }
 
   public createNewPlayer(name: string): Promise<any> {
     return this.http.post(environment.serverUrl + '/player', {name}, {responseType: 'text'}).toPromise();
   }
   public connect(playerName, color?) {
-    if(!this.playerName) {
-      this.playerName = playerName;
-      this.character.connect(playerName);
-      this.draw.connect(playerName, color);
-    }
+    this.playerName = playerName;
+    localStorage.setItem('player', this.playerName);
+    localStorage.setItem('playerColor', color);
+    this.character.connect(playerName);
+    this.draw.connect(playerName, color);
   }
 }

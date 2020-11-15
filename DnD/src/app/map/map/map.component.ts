@@ -1,4 +1,5 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
+import { MapService } from '../services/map.service';
 
 @Component({
   selector: 'dnd-map',
@@ -8,26 +9,14 @@ import { Component, HostBinding, OnInit } from '@angular/core';
 export class MapComponent implements OnInit {
   public map: Array<Array<string>> = [['']];
   public isHex = false;
-  constructor() { }
+  public drawMode = false;
+  constructor(private mapProvider: MapService) { }
   @HostBinding('class') get hostClass () {
     return this.isHex ? 'hex' : 'square'
   }
 
   ngOnInit(): void {
-    const x = [];
-    for(let i = 0; i < 10; ++i) {
-      const y = [];
-      for(let j = 0; j < 10; ++j) {
-        if(i < 2) {
-          y.push('empty')
-        } else {
-          y.push((j % 3) ? 'ocean' : 'grass');
-        }
-      }
-      x.push(y);
-    }
-    console.log(x);
-    this.setMap(x);
+    this.mapProvider.map.subscribe(x => this.setMap(x));
   }
   public getTranslateAttribute(i: number, j: number): string {
     return `translate(${65 * i}, ${j * 85})`;
