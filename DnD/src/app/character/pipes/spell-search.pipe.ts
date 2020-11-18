@@ -6,8 +6,14 @@ import { Spell } from 'src/app/interfaces/spell';
 })
 export class SpellSearchPipe implements PipeTransform {
 
-  transform(spells: Spell[], term: string): Spell[] {
-    return term ? spells.filter(x => x.name.toLocaleLowerCase().includes(term.toLocaleLowerCase())) : spells;
+  transform(spells: Spell[], term: string, level: number): Spell[] {
+    if(!!term) {
+      spells = spells.filter(x => x.name.toLocaleLowerCase().includes(term.toLocaleLowerCase()))
+    }
+    if(!!level || level === 0) {
+      spells = spells.filter(x => x.level === level);
+    }
+    return spells;
   }
 
 }

@@ -10,6 +10,8 @@ import { SpellsService } from 'src/app/services/spells.service';
 })
 export class SpelllistComponent implements OnInit {
   @Input() spells: Spell[] = [];
+  @Input() searchTerm: string = '';
+  @Input() level: number;
   public dialogIsOpened = false;
   constructor(private spellProvider: SpellsService) { }
 

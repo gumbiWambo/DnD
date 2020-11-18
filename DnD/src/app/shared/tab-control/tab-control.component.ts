@@ -24,7 +24,7 @@ export class TabControlComponent implements OnInit {
   public showTab(index: number) {
     this.hideAllTabs();
     this.selectedIndex = index;
-    this.renderer.setStyle(this.tabs[index].element.nativeElement, 'display', 'initial');
+    this.renderer.removeStyle(this.tabs[index].element.nativeElement, 'display');
   }
   private hideAllTabs() {
     this.tabs.forEach((tab: TabDirective) => {
