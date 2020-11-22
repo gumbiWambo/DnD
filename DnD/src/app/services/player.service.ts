@@ -3,13 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { CharacterService } from './character.service';
 import { DrawService } from './draw.service';
+import { MapService } from '../map/services/map.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlayerService {
   public playerName: string;
-  constructor(private http: HttpClient, private character: CharacterService, private draw: DrawService) {
+  constructor(private http: HttpClient, private character: CharacterService, private draw: DrawService, private map: MapService) {
     this.playerName = localStorage.getItem('player');
     this.connect(this.playerName, localStorage.getItem('playerColor'));
   }
@@ -23,5 +24,6 @@ export class PlayerService {
     localStorage.setItem('playerColor', color);
     this.character.connect(playerName);
     this.draw.connect(playerName, color);
+    this.map.connect(playerName, false);
   }
 }

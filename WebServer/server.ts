@@ -6,6 +6,8 @@ import { Database } from './classes/database';
 import { CharacterConnection } from './classes/character-connection';
 import { DrawConnectionMagager } from './classes/draw/draw-connection-manager';
 import { DrawConnection } from './classes/draw/draw-connection';
+import { MapManager } from './classes/map/map-manager';
+import { MapConnection } from './classes/map/map-connection';
 
 const app = express();
 const server = http.createServer(app);
@@ -14,6 +16,7 @@ const wssCharacter = new WebSocket.Server({server});
 const wssTrade = new WebSocket.Server({server: tradeServer});
 const database = Database.getInstance();
 const drawManager = DrawConnectionMagager.getInstance();
+const mapManager = MapManager.getInstance();
 const characterConnections: CharacterConnection[] = [];
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
@@ -28,7 +31,8 @@ wssCharacter.on('connection', (ws: WebSocket, request) => {
   if(!isValid(playerName)) {
     if(queryParams.color) {
       drawManager.addConnection(new DrawConnection(playerName, queryParams.color, ws));
-    } else if(queryParams.map) {
+    } else if(queryParams.map && playerName) {
+      mapManager.addConnection(new MapConnection(playerName, ws, queryParams.master))
     } else {
       ws.close();
     }

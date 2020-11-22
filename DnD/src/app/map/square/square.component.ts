@@ -8,6 +8,8 @@ import { Component, ElementRef, Input, OnInit } from '@angular/core';
 export class SquareComponent implements OnInit {
 
   @Input() type: string = 'dungonGround';
+  @Input() x: number = 0;
+  @Input() y: number = 0;
 
   constructor(public element: ElementRef) { }
 
