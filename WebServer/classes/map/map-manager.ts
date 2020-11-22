@@ -58,7 +58,10 @@ export class MapManager {
 
   }
   private playerMessage(data: any) {
+    switch(data.command) {
 
+    }
+    this.sendMap();
   }
   private sendMap() {
     this.connection.forEach(x => {

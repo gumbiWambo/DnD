@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { WebsocketService } from 'src/app/services/websocket.service';
-import { environment } from 'src/environments/environment';
 import { Spell } from 'src/app/interfaces/spell';
 import { SpellsService } from 'src/app/services/spells.service';
 import { CharacterService } from 'src/app/services/character.service';
 import { NgForm } from '@angular/forms';
-import { format } from 'path';
+
 
 @Component({
   selector: 'dnd-character',
