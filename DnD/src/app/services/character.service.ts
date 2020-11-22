@@ -20,6 +20,7 @@ export class CharacterService {
     initiative: 0,
     speed: 0,
     hitpointMaximum: 0,
+    temporaryHitpoints: 0,
     strengthScore: 0,
     dexterityScore: 0,
     constitutionScore: 0,

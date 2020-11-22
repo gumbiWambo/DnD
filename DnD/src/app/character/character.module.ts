@@ -17,10 +17,27 @@ import { SkillComponent } from './skills/skill/skill.component';
 import { SavingThorwsComponent } from './saving-thorws/saving-thorws.component';
 import { MapModule } from '../map/map.module';
 
+import { SpellToStringPipe } from './spell/spell-to-string.pipe';
+
 
 
 @NgModule({
-  declarations: [CharacterComponent, HeaderComponent, AbilityComponent, EquipmentComponent, PiecesComponent, SpelllistComponent, SpellComponent, SpellSearchPipe, SkillsComponent, ScorePipe, NumberToStringPipe, SkillComponent, SavingThorwsComponent],
+  declarations: [
+    CharacterComponent,
+    HeaderComponent,
+    AbilityComponent,
+    EquipmentComponent,
+    PiecesComponent,
+    SpelllistComponent,
+    SpellComponent,
+    SpellSearchPipe,
+    SkillsComponent,
+    ScorePipe,
+    NumberToStringPipe,
+    SkillComponent,
+    SavingThorwsComponent,
+    SpellToStringPipe
+  ],
   imports: [
     CommonModule,
     SharedModule,

@@ -5,6 +5,8 @@ import { environment } from 'src/environments/environment';
 import { Spell } from 'src/app/interfaces/spell';
 import { SpellsService } from 'src/app/services/spells.service';
 import { CharacterService } from 'src/app/services/character.service';
+import { NgForm } from '@angular/forms';
+import { format } from 'path';
 
 @Component({
   selector: 'dnd-character',
@@ -87,6 +89,10 @@ export class CharacterComponent implements OnInit {
 
   ngOnInit(): void {
     
+  }
+  public submit(form: NgForm) {
+    form.controls.spellClass
+    this.spellProvider.createClassSpells(form.controls.spellClass.value.class, form.controls.spellClass.value.values)
   }
   public useEquipment(equipment: string) {
     this.characterProvider.socket.next({command: 'useEquipment', payload: equipment});

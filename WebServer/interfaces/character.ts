@@ -12,6 +12,7 @@ export interface Character{
   initiative: number,
   speed: number,
   hitpointMaximum: number,
+  tempoaryHitpoints: number,
   strengthScore: number,
   dexterityScore: number,
   constitutionScore: number,

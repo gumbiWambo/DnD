@@ -19,4 +19,7 @@ export class SpellsService {
   public createSpell(body: any): Promise<any> {
     return this.http.post(environment.serverUrl + '/spells', body, {responseType: 'text'}).toPromise();
   }
+  public createClassSpells(className: string, spells: string[]): Promise<void>{
+    return this.http.put<any>(environment.serverUrl + '/spellClass', {className, spells}).toPromise();
+  }
 }

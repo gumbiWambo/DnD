@@ -4,13 +4,12 @@ import * as WebSocket from 'ws';
 import * as bodyParser from 'body-parser';
 import { Database } from './classes/database';
 import { CharacterConnection } from './classes/character-connection';
-import { DrawConnectionMagager } from './classes/draw-connection-manager';
-import { DrawConnection } from './classes/draw-connection';
+import { DrawConnectionMagager } from './classes/draw/draw-connection-manager';
+import { DrawConnection } from './classes/draw/draw-connection';
 
 const app = express();
 const server = http.createServer(app);
 const tradeServer = http.createServer();
-const drawServer = http.createServer();
 const wssCharacter = new WebSocket.Server({server});
 const wssTrade = new WebSocket.Server({server: tradeServer});
 const database = Database.getInstance();
@@ -29,6 +28,7 @@ wssCharacter.on('connection', (ws: WebSocket, request) => {
   if(!isValid(playerName)) {
     if(queryParams.color) {
       drawManager.addConnection(new DrawConnection(playerName, queryParams.color, ws));
+    } else if(queryParams.map) {
     } else {
       ws.close();
     }
@@ -42,13 +42,16 @@ wssTrade.on('connection', (ws: WebSocket) => {
   ws.on('message', (data) => {console.log(data)});
 });
 
-
+app.get('/player', (req, res) => {
+  res.sendStatus(501);
+});
 app.post('/player', (req, res) => {
-  database.insertPlayer(req.body.name).catch(() => {
-    res.sendStatus(500);
-  }).then(() => {
-    res.sendStatus(200);
-  });
+  res.sendStatus(405);
+  // database.insertPlayer(req.body.name).catch(() => {
+  //   res.sendStatus(500);
+  // }).then(() => {
+  //   res.sendStatus(200);
+  // });
 });
 app.get('/spells', (req, res) => {
   database.getSpells().then(x => {
@@ -56,12 +59,13 @@ app.get('/spells', (req, res) => {
   }).catch(() => res.sendStatus(500));
 });
 app.post('/spells', (req, res) => {
-  database.insertSpell(req.body.name, req.body.level, req.body.type, req.body.castingTime, req.body.components, req.body.duration, req.body.discription, req.body.range).catch(() => {
-    res.sendStatus(500);
-  }).then(() => {
-    console.log('woop');
-    res.sendStatus(200);
-  });
+  res.sendStatus(405);
+  // database.insertSpell(req.body.name, req.body.level, req.body.type, req.body.castingTime, req.body.components, req.body.duration, req.body.discription, req.body.range).catch(() => {
+  //   res.sendStatus(500);
+  // }).then(() => {
+  //   console.log('woop');
+  //   res.sendStatus(200);
+  // });
 });
 app.get('/map/:name', (req, res) => {
   try{
@@ -71,7 +75,14 @@ app.get('/map/:name', (req, res) => {
     res.sendStatus(500);
   }
 });
-
+app.put('/spellClass', (req, res) => {
+  res.sendStatus(405);
+  // if (req.body.className && req.body.spells) {
+  //   database.insertSpellClass(req.body.className, req.body.spells).then(() => res.sendStatus(200)).catch(() => res.sendStatus(500));
+  // } else {
+  //   res.sendStatus(400);
+  // }
+});
 server.listen(1337, '0.0.0.0', () => {
   console.log(`Server started on port ${JSON.stringify(server.address())}`);
 });

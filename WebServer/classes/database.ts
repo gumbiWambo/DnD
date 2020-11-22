@@ -27,6 +27,43 @@ export class Database {
       });
     });
   }
+  public insertSpellClass(className: string, spellNames: string[]): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      if(className && spellNames) {
+        const spellWhere = 'Name = "' + spellNames.join('" OR Name = "') + '"';
+        db.serialize(() => {
+          db.all(`SELECT nKey FROM Spells WHERE ` + spellWhere, (error: any, spellKeys: {nKey: number}[]) => {
+            if(error) {
+              console.log(error);
+              reject(error);
+            } else {
+              db.all(`SELECT Key FROM Class WHERE Name = '${className}'`, (error: any, classKey: {Key: number}[]) => {
+                if(error) {
+                  console.log(error);
+                  reject(error);
+                } else {
+                  let values: string = '';
+                  spellKeys.map(x => x.nKey).forEach(x => {
+                    values += `(${classKey[0].Key}, ${x}), `;
+                  });
+                  db.run(`INSERT INTO SpellClass (Class, Spell)
+                          VALUES ` + values.substring(0, values.length - 2), (error: any) => {
+                    if (error) {
+                      reject(error);
+                    } else {
+                      resolve();
+                    }
+                  });
+                }
+              });
+            }
+          });
+        });
+      } else {
+        reject('Wrong parameters')
+      }
+    });
+  }
 
   public insertSpell(name: string, level: number, type: string, castingTime: string, components: string, duration: string, disctiption: string, range: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
@@ -193,6 +230,7 @@ export class Database {
         initiative: 0,
         speed: 0,
         hitpointMaximum: 0,
+        tempoaryHitpoints: 0,
         strengthScore: 0,
         dexterityScore: 0,
         constitutionScore: 0,
@@ -265,6 +303,7 @@ export class Database {
       speed: row.Speed,
       spellcastingAbility: row.SpellcastingAbility,
       hitpointMaximum: row.HitPointMaximum,
+      tempoaryHitpoints: row.HitPointMaximum,
       equipment: [
         {
           name: 'Ration',

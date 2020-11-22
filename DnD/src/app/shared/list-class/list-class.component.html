@@ -1,0 +1,10 @@
+<select [(ngModel)]="selectedClass">
+  <option *ngFor="let className of classList">{{className}}</option>
+</select>
+<ul>
+  <li *ngFor="let val of selectedValues">{{val}}</li>
+</ul>
+<input type="text" [(ngModel)]="inputValue">
+<ul>
+  <li *ngFor="let val of valueList | filter:inputValue" (click)="addToValue(val)">{{val}}</li>
+</ul>
