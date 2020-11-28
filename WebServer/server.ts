@@ -3,11 +3,12 @@ import * as http from 'http';
 import * as WebSocket from 'ws';
 import * as bodyParser from 'body-parser';
 import { Database } from './classes/database';
-import { CharacterConnection } from './classes/character-connection';
+import { CharacterConnection } from './classes/character/character-connection';
 import { DrawConnectionMagager } from './classes/draw/draw-connection-manager';
 import { DrawConnection } from './classes/draw/draw-connection';
 import { MapManager } from './classes/map/map-manager';
 import { MapConnection } from './classes/map/map-connection';
+import { CharacterManager } from './classes/character/character-manager';
 
 const app = express();
 const server = http.createServer(app);
@@ -17,7 +18,7 @@ const wssTrade = new WebSocket.Server({server: tradeServer});
 const database = Database.getInstance();
 const drawManager = DrawConnectionMagager.getInstance();
 const mapManager = MapManager.getInstance();
-const characterConnections: CharacterConnection[] = [];
+const characterManager = CharacterManager.getInstance();
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -99,14 +100,14 @@ tradeServer.listen(8080, '0.0.0.0', () => {
  Helper Functions
 */
 function isValid(playerName: string): boolean {
-  const existingConnection = characterConnections.find(x => x.playerName === playerName);
+  const existingConnection = characterManager.connections.find(x => x.playerName === playerName);
   return !existingConnection;
 }
 function createPlayerConnection(playerName: string, ws: WebSocket) {
   ws.on('close', () => {
-    characterConnections.splice(characterConnections.findIndex(x => x.playerName === playerName), 1);
+    characterManager.connections.splice(characterManager.connections.findIndex(x => x.playerName === playerName), 1);
   });
-  characterConnections.push(new CharacterConnection(playerName, ws));
+  characterManager.connections.push(new CharacterConnection(playerName, ws));
 }
 function getQueryParams(url: string | undefined): any {
   const rawQueryParams = url?.split('?')[1];

@@ -1,8 +1,10 @@
 @import '../../../variables.scss';
 :host{
   .tabContent{
-    overflow-y: auto;
+    box-sizing: border-box;
     height: calc(100% - 28px);
+    overflow-y: auto;
+    padding: 5px;
     ::ng-deep *{
       color: white;
     }

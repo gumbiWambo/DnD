@@ -1,13 +1,13 @@
 import * as WebSocket from 'ws';
-import { Character } from '../interfaces/character';
-import { Equipment } from '../interfaces/equipment';
-import { Database } from './database';
+import { Character } from '../../interfaces/character';
+import { Equipment } from '../../interfaces/equipment';
+import { Database } from '../database';
 
 export class CharacterConnection{
   public playerName: string = '';
   public socket: WebSocket;
   private database = Database.getInstance();
-  private character: Character = {
+  public character: Character = {
     name: '',
     player: '',
     class: '',

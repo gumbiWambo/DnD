@@ -88,9 +88,9 @@ export class CharacterComponent implements OnInit {
     
   }
   public submit(form: NgForm) {
-    form.controls.spellClass
-    this.spellProvider.createClassSpells(form.controls.spellClass.value.class, form.controls.spellClass.value.values)
+    this.spellProvider.createClassSpells(form.controls.spellClass.value.class, form.controls.spellClass.value.values);
   }
+  
   public useEquipment(equipment: string) {
     this.characterProvider.socket.next({command: 'useEquipment', payload: equipment});
   }

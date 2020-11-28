@@ -1,5 +1,2 @@
-<img [src]="'../../../assets/textures/'+ type + '.png'" alt="">
+<img *ngIf="!!field.type" [ngStyle]="{transform: 'rotate(' + field.rotation + 'deg)'}"[src]="'../../../assets/textures/'+ field.type + '.png'" alt="">
 <p>{{x}}, {{y}}</p>
-<div class="creatureContainer">
-
-</div>

@@ -26,6 +26,9 @@ export class DrawConnectionMagager {
       this.connections.splice(index, 1);
     }
   }
+  public getPlayerColor(playerName: string): string {
+    return this.connections.find(x => x.playerName === playerName)?.color || ''
+  }
 
   private prepareSocket(socket: WebSocket, playerName: string) {
     socket.on('message', (data) => {

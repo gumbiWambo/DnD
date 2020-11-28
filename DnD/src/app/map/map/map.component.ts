@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, HostListener, OnInit } from '@angular/core';
 import { MapService } from '../services/map.service';
 
 @Component({
@@ -13,6 +13,18 @@ export class MapComponent implements OnInit {
   constructor(private mapProvider: MapService) { }
   @HostBinding('class') get hostClass () {
     return this.isHex ? 'hex' : 'square'
+  }
+  @HostListener('window:keyup', ['$event']) walk($event: KeyboardEvent) {
+    switch($event.key) {
+      case 'w': this.mapProvider.walk('north'); break;
+      case 'a': this.mapProvider.walk('west'); break;
+      case 's': this.mapProvider.walk('south'); break;
+      case 'd': this.mapProvider.walk('east'); break;
+      case 'q': this.mapProvider.walk('westNorth'); break;
+      case 'e': this.mapProvider.walk('eastNorth'); break;
+      case 'y': this.mapProvider.walk('westSouth'); break;
+      case 'x': this.mapProvider.walk('eastSouth'); break;
+    }
   }
 
   ngOnInit(): void {
