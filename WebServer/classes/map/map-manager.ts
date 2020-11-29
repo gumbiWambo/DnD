@@ -31,7 +31,14 @@ export class MapManager {
       connection.socket.close();
     } else {
       const characterName = this.characterManager.connections.find(x => x.playerName == connection.playerName)?.character.name ?? '';
-      this.creatureCoordinates.push(new CreatureCoordinate(connection.playerName, characterName, 1, 1, this.draw.getPlayerColor(connection.playerName)));
+      const coords = {x: 1, y: 1}
+      if(characterName === 'Shaobo') {
+        coords.x = 1;
+        coords.y = 7;
+      } else if(characterName === 'Lio Reynisson') {
+        coords.y = 14;
+      }
+      this.creatureCoordinates.push(new CreatureCoordinate(connection.playerName, characterName, coords.x, coords.y, this.draw.getPlayerColor(connection.playerName)));
       this.prepareSocket(connection);
       this.connections.push(connection);
     }
