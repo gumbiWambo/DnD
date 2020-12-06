@@ -1,4 +1,5 @@
 import { Equipment } from "./equipment";
+import { Language } from "./language";
 
 export interface Character{
   name: string,
@@ -20,15 +21,17 @@ export interface Character{
   wisdomScore: number,
   charismaScore: number,
   copperPieces: number,
-  siverPieces: number,
+  silverPieces: number,
   electrumPieces: number,
   goldPieces: number,
   platinPieces: number,
   inspiration: boolean,
   spellcastingAbility: string,
+  spellCastingClass: string,
   spellAttackBonus: number,
   proficiencyBonus: number,
   equipment: Equipment[],
+  languages: Language[],
   proficiencys: {
     acrobatics: boolean;
     animalHandling: boolean;

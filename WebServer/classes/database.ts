@@ -1,5 +1,6 @@
 import { Spell } from "../interfaces/spell";
 import { Character } from "../interfaces/character";
+import { Language } from "../interfaces/language";
 
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('database/dnd.db', (error: any) => {
@@ -82,14 +83,27 @@ export class Database {
     });
   }
 
-  public getSpells(): Promise<Spell[]> {
+  public getSpells(classDnd?: string): Promise<Spell[]> {
+    const classWhere = !!classDnd ? `        JOIN SpellClass on Spells.nKey = SpellClass.Spell
+    JOIN Class on Class.Key = SpellClass.Class AND Class.Name = "${classDnd}"` : ''
     return new Promise((resolve, reject) => {
       db.serialize(() => {
-        db.all(`SELECT * FROM Spells`, (error: any, row: any) => {
+        db.all(`Select
+        Spells.Name,
+        Spells.Discription,
+        Spells.Duration,
+        Spells.CastingTime,
+        Spells.Level,
+        Spells.Range,
+        Spells.Components,
+        Spells.Type
+        From Spells
+        ${classWhere}`, (error: any, row: any) => {
           if(error) {
             console.log(error);
             reject(error);
           } else {
+            console.log(row.length, classDnd, classWhere);
             resolve(this.toSpells(row));
           }
         });
@@ -152,19 +166,21 @@ export class Database {
         Character.ProficiencySavingWisdom,
         Character.ProficiencySleightOfHand,
         Character.ProficiencyStealth,
-        Character.ProficiencySurvival
+        Character.ProficiencySurvival,
+        SpellCastingClass.Name as SpellClass
         FROM Character 
         INNER JOIN Class ON Class.Key = Character.Class 
         INNER JOIN Race  ON Race.Key = Character.Race
         INNER JOIN Background ON Background.Key = Character.Background
         INNER JOIN Player ON Player.Key = Character.Player
         INNER JOIN AbilityTypes ON AbilityTypes.Key = Character.SpellcastingAbility
-        WHERE Player.Name = '${playerName}'`, (error: any, row: any[]) => {
+        INNER JOIN Class as SpellCastingClass on SpellCastingClass.Key = Character.SpellCastingClass
+        WHERE Player.Name = '${playerName}'`, async (error: any, row: any[]) => {
           if(error) {
             console.log(error);
             reject(error);
           } else {
-            resolve(this.toCharacter(row[0]))
+            resolve(await this.toCharacter(row[0]))
           }
         });
       });
@@ -216,7 +232,7 @@ export class Database {
     return !(guess.includes(';') || guess.includes('--') || guess.includes('DROP'));
   }
 
-  private toCharacter(row: any): Character {
+  private async toCharacter(row: any): Promise<Character> {
     if(!row) {
       return {
         name: '',
@@ -238,15 +254,17 @@ export class Database {
         wisdomScore: 0,
         charismaScore: 0,
         copperPieces: 0,
-        siverPieces: 0,
+        silverPieces: 0,
         electrumPieces: 0,
         goldPieces: 0,
         platinPieces: 0,
         inspiration: false,
         spellcastingAbility: '',
         spellAttackBonus: 0,
+        spellCastingClass: '',
         proficiencyBonus: 0,
         equipment: [],
+        languages: [],
         proficiencys: {
           acrobatics: false,
           animalHandling: false,
@@ -296,12 +314,13 @@ export class Database {
       constitutionScore: row.ConstitutionScore,
       experience: row.Experience,
       copperPieces: row.CopperPieces,
-      siverPieces: row.SilverPieces,
+      silverPieces: row.SilverPieces,
       goldPieces: row.GoldPieces,
       electrumPieces: row.ElectrumPieces,
       platinPieces: row.PlatinPieces,
       speed: row.Speed,
       spellcastingAbility: row.SpellcastingAbility,
+      spellCastingClass: row.SpellClass,
       hitpointMaximum: row.HitPointMaximum,
       tempoaryHitpoints: row.HitPointMaximum,
       equipment: [
@@ -312,6 +331,7 @@ export class Database {
         }
       ],
       proficiencyBonus: this.getProficiencyBonus(row.Experience),
+      languages: await this.getCharacterLanguages(row.Race),
       proficiencys: {
         acrobatics: Boolean(row.ProficiencyAcrobatics),
         animalHandling: Boolean(row.ProficiencyAnimalHandling),
@@ -357,6 +377,23 @@ export class Database {
     }
   }
 
+  private getCharacterLanguages(race: string): Promise<Language[]> {
+    return new Promise((resolve, reject) => {
+      db.serialize(() => {
+        db.all(`SELECT Languages.Name, Languages.TypicalSpeakers, Languages.Script, Languages.exotic FROM LanguageRace
+        INNER JOIN Race on LanguageRace.race = Race.Key AND Race.Name = '${race}'
+        INNER JOIN Languages on LanguageRace.language = Languages.key`, (error: any, row: any[]) => {
+          if(error) {
+            console.log(error);
+            reject(error);
+          } else {
+            resolve(row.map(x => ({name: x.Name, script: x.Script, typicalSpeakers: x.TypicalSpeakers, exotic: Boolean(x.exotic)})))
+          }
+        });
+      });
+    })
+  }
+
   private toSpells(rows: Array<any>): Spell[] {
     return rows.map(x => ({
       name: x.Name,
@@ -366,7 +403,7 @@ export class Database {
       components: x.Components,
       duration: x.Duration,
       discription: x.Discription,
-      range: x.Range,
+      range: x.Range
     }));
   }
 

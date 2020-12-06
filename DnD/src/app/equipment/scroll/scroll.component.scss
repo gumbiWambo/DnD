@@ -1,0 +1,22 @@
+:host{
+  &.draconic {
+    *{
+      font-family: Draconic;
+    }
+  }
+  &.dwarvish {
+    *{
+      font-family: Dwarvish;
+    }
+  }
+  &.elvish{
+    *{
+      font-family: Elvish;
+    }
+  }
+  &.infernal{
+    *{
+      font-family: Infernal;
+    }
+  }
+}

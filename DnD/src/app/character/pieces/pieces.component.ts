@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'dnd-pieces',
@@ -6,9 +6,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./pieces.component.scss']
 })
 export class PiecesComponent implements OnInit {
-
+  @Input() type: string = '';
+  @Input() amount: number = 0
   constructor() { }
-
+  
   ngOnInit(): void {
   }
 

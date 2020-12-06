@@ -59,7 +59,7 @@ app.post('/player', (req, res) => {
   // });
 });
 app.get('/spells', (req, res) => {
-  database.getSpells().then(x => {
+  database.getSpells(getQueryParams(req.url).class).then(x => {
     res.send(JSON.stringify(x.sort((a, b) => a.name > b.name? 1 : -1))).sendStatus(200);
   }).catch(() => res.sendStatus(500));
 });
@@ -74,7 +74,6 @@ app.post('/spells', (req, res) => {
 });
 app.get('/map/:name', (req, res) => {
   try{
-    console.log(req.params.name, );
     res.sendFile(__dirname + '/maps/' + req.params.name + '.html');
   } catch(error) {
     res.sendStatus(500);

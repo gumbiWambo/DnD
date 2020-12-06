@@ -30,12 +30,13 @@ export class CharacterComponent implements OnInit {
     wisdomScore: 0,
     charismaScore: 0,
     copperPieces: 0,
-    siverPieces: 0,
+    silverPieces: 0,
     electrumPieces: 0,
     goldPieces: 0,
     platinPieces: 0,
     inspiration: false,
     spellcastingAbility: '',
+    spellCastingClass: '',
     spellAttackBonus: 0,
     proficiencyBonus: 0,
     equipment: [
@@ -81,7 +82,6 @@ export class CharacterComponent implements OnInit {
       this.character = x;
     });
     this.spellProvider.spells.subscribe(x => this.spells = x);
-    this.spellProvider.getSpells();
   }
 
   ngOnInit(): void {

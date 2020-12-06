@@ -5,8 +5,12 @@
 <dnd-tab-control>
   <div dndTab="Stats">Tab1</div>
   <div dndTab="Equipment">
-    <dnd-equipment *ngFor="let equipment of character.equipment" [name]="equipment.name" [amount]="equipment.amount"
-      [description]="equipment.description" (use)="useEquipment($event)"></dnd-equipment>
+    <dnd-pieces type="Copper" [amount]="character.copperPieces"></dnd-pieces>
+    <dnd-pieces type="Silver" [amount]="character.silverPieces"></dnd-pieces>
+    <dnd-pieces type="Electrum" [amount]="character.electrumPieces"></dnd-pieces>
+    <dnd-pieces type="Gold" [amount]="character.goldPieces"></dnd-pieces>
+    <dnd-pieces type="Platin" [amount]="character.platinPieces"></dnd-pieces>
+    <dnd-equipment *ngFor="let equipment of character.equipment" [name]="equipment.name" [amount]="equipment.amount" [description]="equipment.description" (use)="useEquipment($event)"></dnd-equipment>
   </div>
   <div dndTab="Skills/Attributes">
     <div>
@@ -58,10 +62,4 @@
   <div dndTab="map">
     <dnd-map></dnd-map>
   </div>
-  <!-- <div dndTab="Spell to Class">
-    <form #form="ngForm" (ngSubmit)="submit(form)">
-      <dnd-list-class [valueList]="spells |spellToString" ngModel name="spellClass"></dnd-list-class>
-      <button>Save</button>
-    </form>
-  </div> -->
 </dnd-tab-control>

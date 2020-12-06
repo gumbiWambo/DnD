@@ -18,6 +18,7 @@ import { SavingThorwsComponent } from './saving-thorws/saving-thorws.component';
 import { MapModule } from '../map/map.module';
 
 import { SpellToStringPipe } from './spell/spell-to-string.pipe';
+import { EquipmentModule } from '../equipment/equipment.module';
 
 
 
@@ -42,7 +43,8 @@ import { SpellToStringPipe } from './spell/spell-to-string.pipe';
     CommonModule,
     SharedModule,
     MapModule,
-    FormsModule
+    FormsModule,
+    EquipmentModule
   ],
   exports: [
     CharacterComponent

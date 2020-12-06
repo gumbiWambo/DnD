@@ -28,14 +28,16 @@ export class CharacterService {
     wisdomScore: 0,
     charismaScore: 0,
     copperPieces: 0,
-    siverPieces: 0,
+    silverPieces: 0,
     electrumPieces: 0,
     goldPieces: 0,
     platinPieces: 0,
     inspiration: false,
     spellcastingAbility: '',
+    spellCastingClass: '',
     spellAttackBonus: 0,
     proficiencyBonus: 0,
+    languages: [],
     equipment: [
       {
         name: null,
@@ -118,6 +120,7 @@ export class CharacterService {
     const character = this.socket.pipe(map(x => JSON.parse(x.data)), share())
     character.subscribe(
       next => {
+        console.log(next);
         this.character.next(next);
       },
       error => {

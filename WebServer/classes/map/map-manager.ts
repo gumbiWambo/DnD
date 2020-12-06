@@ -31,12 +31,13 @@ export class MapManager {
       connection.socket.close();
     } else {
       const characterName = this.characterManager.connections.find(x => x.playerName == connection.playerName)?.character.name ?? '';
-      const coords = {x: 1, y: 1}
+      const coords = {x: 1, y: 1};
       if(characterName === 'Shaobo') {
-        coords.x = 1;
         coords.y = 7;
       } else if(characterName === 'Lio Reynisson') {
         coords.y = 14;
+      } else if(characterName === 'Don Quichotte Amber') {
+        coords.y = 21;
       }
       this.creatureCoordinates.push(new CreatureCoordinate(connection.playerName, characterName, coords.x, coords.y, this.draw.getPlayerColor(connection.playerName)));
       this.prepareSocket(connection);
