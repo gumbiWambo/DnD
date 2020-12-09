@@ -1,7 +1,8 @@
 import * as WebSocket from 'ws';
 import { Character } from '../../interfaces/character';
-import { Equipment } from '../../interfaces/equipment';
+import { Backpack, Dagger, Equipment, Net, Ration, Rope, Scroll, SendingStone } from '../equipment/equipment';
 import { Database } from '../database';
+import { FinsterFrucht, GiraffenFrucht, MantelFrucht, ParamesiaFrucht, SwimSwimFriut, TrennTrennFrucht } from '../equipment/devil-friutes';
 
 export class CharacterConnection{
   public playerName: string = '';
@@ -81,6 +82,34 @@ export class CharacterConnection{
     this.loadCharacter();
     this.sendCharacter();
   }
+  public addEquipment(equipment: Equipment) {
+    const equipments = this.character.equipment;
+    const foundEquipment = equipments.find(x => x.name === equipment.name);
+    if(!foundEquipment) {
+      equipments.push(equipment);
+    } else {
+      foundEquipment.amount += equipment.amount;
+    }
+    this.database.updateEquipment(this.character.player, this.character.name, equipments).then(x => {
+      this.character = x;
+      this.sendCharacter();
+    });
+  }
+  public decreaseEquipment(equipment: Equipment) {
+    const equipments = this.character.equipment;
+    const index = equipments.findIndex((x) => x.name === equipment.name);
+    if(index > -1) {
+      if(equipments[index].amount <= equipment.amount) {
+        equipments.splice(index, 1);
+      } else {
+        equipments[index].amount -= equipment.amount
+      }
+    }
+    this.database.updateEquipment(this.character.player, this.character.name, equipments).then(x => {
+      this.character = x;
+      this.sendCharacter();
+    })
+  }
   private loadCharacter() {
     this.database.getCharacter(this.playerName).then((x) => {
       this.character = x;
@@ -94,10 +123,13 @@ export class CharacterConnection{
       if(foundEquipment.amount <= 0) {
         this.character.equipment.splice(this.character.equipment.findIndex(x => x.name === equipment), 1);
       }
-      this.sendCharacter();
+      this.database.updateEquipment(this.character.player, this.character.name, this.character.equipment).then(x => {
+        this.character = x;
+        this.sendCharacter();
+      });
     }
   }
-  private updateCurrency(currency: string, value: number): void {
+  public updateCurrency(currency: string, value: number): void {
     let currencyUpdate: Promise<Character> = Promise.reject('woops');
     switch(currency) {
       case 'gold': currencyUpdate = this.database.updateGold(this.playerName, this.character.name, value); break;

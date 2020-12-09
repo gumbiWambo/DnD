@@ -19,11 +19,19 @@ export class PlayerService {
     return this.http.post(environment.serverUrl + '/player', {name}, {responseType: 'text'}).toPromise();
   }
   public connect(playerName, color?) {
+    if(playerName === null || playerName === 'null') {
+      return null;
+    }
     this.playerName = playerName;
     localStorage.setItem('player', this.playerName);
     localStorage.setItem('playerColor', color);
     this.character.connect(playerName);
     this.draw.connect(playerName, color);
     this.map.connect(playerName, false);
+  }
+  public logout() {
+    localStorage.removeItem('player');
+    localStorage.removeItem('playerColor');
+    window.location.reload();
   }
 }

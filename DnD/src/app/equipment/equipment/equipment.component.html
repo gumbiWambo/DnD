@@ -1,0 +1,17 @@
+<div class="pieces">
+  <dnd-pieces type="Copper" [amount]="character.copperPieces"></dnd-pieces>
+  <dnd-pieces type="Silver" [amount]="character.silverPieces"></dnd-pieces>
+  <dnd-pieces type="Electrum" [amount]="character.electrumPieces"></dnd-pieces>
+  <dnd-pieces type="Gold" [amount]="character.goldPieces"></dnd-pieces>
+  <dnd-pieces type="Platin" [amount]="character.platinPieces"></dnd-pieces>
+</div>
+
+<ng-template ngFor let-equipment [ngForOf]="character.equipment | sort">
+  <ng-container [ngSwitch]="equipment.type">
+    <dnd-scroll *ngSwitchCase="'scroll'" [name]="equipment.name" [message]="equipment.description" [language]="equipment.language"></dnd-scroll>
+    <dnd-thing *ngSwitchCase="'thing'" [name]="equipment.name" [description]="equipment.description" [amount]="equipment.amount"></dnd-thing>
+    <dnd-thing *ngSwitchCase="'weapon'" [name]="equipment.name" [description]="equipment.description" [amount]="equipment.amount"></dnd-thing>
+    <dnd-thing *ngSwitchCase="'Special Weapon'" [name]="equipment.name" [description]="equipment.description" [amount]="equipment.amount"></dnd-thing>
+    <dnd-consumable *ngSwitchDefault  [name]="equipment.name" [amount]="equipment.amount" [description]="equipment.description" (use)="useEquipment($event)"></dnd-consumable>
+  </ng-container>
+</ng-template>

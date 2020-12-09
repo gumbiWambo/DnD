@@ -4,8 +4,6 @@ import { CharacterComponent } from './character/character.component';
 import { HeaderComponent } from './header/header.component';
 import { AbilityComponent } from './ability/ability.component';
 import { SharedModule } from '../shared/shared.module';
-import { EquipmentComponent } from './equipment/equipment.component';
-import { PiecesComponent } from './pieces/pieces.component';
 import { SpelllistComponent } from './spelllist/spelllist.component';
 import { SpellComponent } from './spell/spell.component';
 import { SpellSearchPipe } from './pipes/spell-search.pipe';
@@ -19,6 +17,7 @@ import { MapModule } from '../map/map.module';
 
 import { SpellToStringPipe } from './spell/spell-to-string.pipe';
 import { EquipmentModule } from '../equipment/equipment.module';
+import { CharacterRoutingModule } from './character-routing.module';
 
 
 
@@ -27,8 +26,6 @@ import { EquipmentModule } from '../equipment/equipment.module';
     CharacterComponent,
     HeaderComponent,
     AbilityComponent,
-    EquipmentComponent,
-    PiecesComponent,
     SpelllistComponent,
     SpellComponent,
     SpellSearchPipe,
@@ -44,7 +41,8 @@ import { EquipmentModule } from '../equipment/equipment.module';
     SharedModule,
     MapModule,
     FormsModule,
-    EquipmentModule
+    EquipmentModule,
+    CharacterRoutingModule
   ],
   exports: [
     CharacterComponent

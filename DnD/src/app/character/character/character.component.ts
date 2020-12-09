@@ -3,6 +3,7 @@ import { Spell } from 'src/app/interfaces/spell';
 import { SpellsService } from 'src/app/services/spells.service';
 import { CharacterService } from 'src/app/services/character.service';
 import { NgForm } from '@angular/forms';
+import { PlayerService } from 'src/app/services/player.service';
 
 
 @Component({
@@ -77,7 +78,7 @@ export class CharacterComponent implements OnInit {
   }
   public spells: Spell[] = [];
   public spellSearchTerm = '';
-  constructor(private characterProvider: CharacterService, private spellProvider: SpellsService) { 
+  constructor(private characterProvider: CharacterService, private spellProvider: SpellsService, private player: PlayerService) { 
     this.characterProvider.character.subscribe(x => {
       this.character = x;
     });
@@ -87,12 +88,10 @@ export class CharacterComponent implements OnInit {
   ngOnInit(): void {
     
   }
-  public submit(form: NgForm) {
-    this.spellProvider.createClassSpells(form.controls.spellClass.value.class, form.controls.spellClass.value.values);
+  public logout() {
+    this.player.logout();
   }
   
-  public useEquipment(equipment: string) {
-    this.characterProvider.socket.next({command: 'useEquipment', payload: equipment});
-  }
+
 
 }

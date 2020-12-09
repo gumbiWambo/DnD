@@ -39,7 +39,9 @@ wssCharacter.on('connection', (ws: WebSocket, request) => {
     }
   }
   if(playerName) {
-    createPlayerConnection(playerName, ws);
+    characterManager.addPlayerConnection(playerName, ws);
+  } else if(!!queryParams.master) {
+    characterManager.setMasterConnection(ws);
   }
 
 });
@@ -101,12 +103,6 @@ tradeServer.listen(8080, '0.0.0.0', () => {
 function isValid(playerName: string): boolean {
   const existingConnection = characterManager.connections.find(x => x.playerName === playerName);
   return !existingConnection;
-}
-function createPlayerConnection(playerName: string, ws: WebSocket) {
-  ws.on('close', () => {
-    characterManager.connections.splice(characterManager.connections.findIndex(x => x.playerName === playerName), 1);
-  });
-  characterManager.connections.push(new CharacterConnection(playerName, ws));
 }
 function getQueryParams(url: string | undefined): any {
   const rawQueryParams = url?.split('?')[1];

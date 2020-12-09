@@ -5,8 +5,13 @@
     height: calc(100% - 28px);
     overflow-y: auto;
     padding: 5px;
-    ::ng-deep *{
-      color: white;
+    ::ng-deep {
+      *{
+        color: white;
+      }
+      button {
+        background: $dnd-main-color-dark;
+      }
     }
   }
   .tabButtonGroup{
@@ -19,6 +24,7 @@
       color: white;
       border: none;
       height: 28px;
+
       border-bottom: solid transparent 1px;
       &.selected{
         border-bottom-color: white;

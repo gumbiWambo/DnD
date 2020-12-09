@@ -1,6 +1,7 @@
 import { Spell } from "../interfaces/spell";
 import { Character } from "../interfaces/character";
 import { Language } from "../interfaces/language";
+import { Equipment } from "./equipment/equipment";
 
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('database/dnd.db', (error: any) => {
@@ -103,7 +104,6 @@ export class Database {
             console.log(error);
             reject(error);
           } else {
-            console.log(row.length, classDnd, classWhere);
             resolve(this.toSpells(row));
           }
         });
@@ -167,6 +167,7 @@ export class Database {
         Character.ProficiencySleightOfHand,
         Character.ProficiencyStealth,
         Character.ProficiencySurvival,
+        Character.Equipment,
         SpellCastingClass.Name as SpellClass
         FROM Character 
         INNER JOIN Class ON Class.Key = Character.Class 
@@ -184,6 +185,25 @@ export class Database {
           }
         });
       });
+    });
+  }
+
+  public updateEquipment(playerName: string, characterName: string, equipment: Equipment[]) {
+    return new Promise<Character>(async (resolve, reject) => {
+      if(playerName && characterName && Array.isArray(equipment) && this.isSecureStirng(playerName) && this.isSecureStirng(characterName)){
+        db.run(`UPDATE Character SET Equipment = '${JSON.stringify(equipment)}'
+        WHERE Player IN ( SELECT Player.Key FROM Player WHERE Player.Name = '${playerName}') AND Character.Name = '${characterName}'`,(error: any) => {
+          if(error){
+            console.error(error);
+            reject(!!error);
+          }
+          this.getCharacter(playerName).then(x => {
+            resolve(x);
+          });
+        });
+      } else {
+        reject('Parameters Invalid');
+      }
     });
   }
 
@@ -209,7 +229,6 @@ export class Database {
 
   private updateCurrency(playerName: string, characterName: string, currency: string, value: number): Promise<Character> {
     return new Promise<Character>(async (resolve, reject) => {
-      console.log(playerName, characterName, currency, value, this.isSecureStirng(currency), this.isSecureStirng(playerName), this.isSecureStirng(characterName));
       if(playerName && characterName && currency && !Number.isNaN(Number(value)) && this.isSecureStirng(currency) && this.isSecureStirng(playerName) && this.isSecureStirng(characterName)){
         db.run(`UPDATE Character SET ${currency} = ${Number(value)}
         WHERE Player IN ( SELECT Player.Key FROM Player WHERE Player.Name = '${playerName}') AND Character.Name = '${characterName}'`,(error: any) => {
@@ -226,6 +245,8 @@ export class Database {
       }
     });
   }
+
+
   
 
   private isSecureStirng(guess: string): boolean {
@@ -323,15 +344,9 @@ export class Database {
       spellCastingClass: row.SpellClass,
       hitpointMaximum: row.HitPointMaximum,
       tempoaryHitpoints: row.HitPointMaximum,
-      equipment: [
-        {
-          name: 'Ration',
-          description: 'blub',
-          amount: 10
-        }
-      ],
+      equipment: JSON.parse(row.Equipment),
       proficiencyBonus: this.getProficiencyBonus(row.Experience),
-      languages: await this.getCharacterLanguages(row.Race),
+      languages: await this.getCharacterLanguages(row.Race, row.Player),
       proficiencys: {
         acrobatics: Boolean(row.ProficiencyAcrobatics),
         animalHandling: Boolean(row.ProficiencyAnimalHandling),
@@ -377,17 +392,29 @@ export class Database {
     }
   }
 
-  private getCharacterLanguages(race: string): Promise<Language[]> {
+  private getCharacterLanguages(race: string, playerName: string): Promise<Language[]> {
     return new Promise((resolve, reject) => {
       db.serialize(() => {
         db.all(`SELECT Languages.Name, Languages.TypicalSpeakers, Languages.Script, Languages.exotic FROM LanguageRace
         INNER JOIN Race on LanguageRace.race = Race.Key AND Race.Name = '${race}'
-        INNER JOIN Languages on LanguageRace.language = Languages.key`, (error: any, row: any[]) => {
+        INNER JOIN Languages on LanguageRace.language = Languages.key`, (error: any, raceLanguages: any[]) => {
           if(error) {
             console.log(error);
             reject(error);
           } else {
-            resolve(row.map(x => ({name: x.Name, script: x.Script, typicalSpeakers: x.TypicalSpeakers, exotic: Boolean(x.exotic)})))
+            db.all(`SELECT Languages.Name, Languages.TypicalSpeakers, Languages.Script, Languages.exotic FROM CharacterLanguage
+            INNER JOIN Languages on CharacterLanguage.language = Languages.key
+            INNER JOIN Character on CharacterLanguage.character = Character.Key
+            INNER JOIN Player on Player.Key = Character.Player
+            WHERE Player.Name = '${playerName}'`, (error: any, row: any[]) => {
+              if(error) {
+                console.log(error);
+                reject(error);
+              } else {
+                const languages = [...raceLanguages, ...row];
+                resolve(languages.map(x => ({name: x.Name, script: x.Script, typicalSpeakers: x.TypicalSpeakers, exotic: Boolean(x.exotic)})))
+              }
+            });
           }
         });
       });

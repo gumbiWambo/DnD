@@ -12,9 +12,6 @@
   dnd-tab-control {
     height: calc(100% - 51px);
   }
-  input[type="text"] {
-    color: black;
-  }
   div[dndTab="Skills/Attributes"]>div {
     display: grid;
     grid-template-areas: "savingThrows skills"

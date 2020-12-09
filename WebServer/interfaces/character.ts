@@ -1,4 +1,4 @@
-import { Equipment } from "./equipment";
+import { Equipment } from "../classes/equipment/equipment";
 import { Language } from "./language";
 
 export interface Character{

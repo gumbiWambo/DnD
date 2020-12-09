@@ -8,8 +8,13 @@ import { LoginComponent } from './login/login/login.component';
 const routes: Routes = [
   {
     path: '',
-    component: CharacterComponent,
+    loadChildren: () => import('./character/character.module').then(m => m.CharacterModule),
     canActivate: [AuthenticatedGuard]
+  },
+  {
+    path: 'master',
+    loadChildren: () => import('./master/master.module').then(m => m.MasterModule)
+
   },
   {
     path: 'login',
