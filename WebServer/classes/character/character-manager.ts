@@ -15,7 +15,6 @@ export class CharacterManager {
     return characterManager;
   }
   public setMasterConnection(ws: WebSocket) {
-    console.log('masterConnection');
     this.masterConnection = ws;
     this.masterConnection.on('close', () => this.removeMasterConnection());
     this.masterConnection.on('error', (error) => console.log(error));

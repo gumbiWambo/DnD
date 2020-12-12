@@ -38,7 +38,11 @@ export class MapManager {
         coords.y = 14;
       } else if(characterName === 'Don Quichotte Amber') {
         coords.y = 21;
+      } else if(connection.playerName === 'Leo') {
+        coords.y = 7;
+        coords.x = 28;
       }
+      console.log(connection.playerName);
       this.creatureCoordinates.push(new CreatureCoordinate(connection.playerName, characterName, coords.x, coords.y, this.draw.getPlayerColor(connection.playerName)));
       this.prepareSocket(connection);
       this.connections.push(connection);
