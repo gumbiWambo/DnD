@@ -17,8 +17,14 @@ export class LoginComponent implements OnInit {
 
   public login(form: NgForm) {
     if(form.value.playerName) {
-      this.player.connect(form.value.playerName, form.value.playerColor);
-      this.router.navigate(['']);
+      this.player.getPlayer(form.value.playerName).then(x => {
+        this.player.connect(form.value.playerName, Boolean(x.master),  form.value.playerColor);
+        if (!!Boolean(x.master)) {
+          this.router.navigate(['master']);
+        } else {
+          this.router.navigate(['']);
+        }
+      });
     }
   }
 

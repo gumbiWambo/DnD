@@ -6,15 +6,18 @@ import { PlayerService } from '../services/player.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthenticatedGuard implements CanActivate {
-  constructor(private player: PlayerService, private router: Router) {
-
+export class MasterGuard implements CanActivate {
+  constructor(private router: Router, private player: PlayerService){
   }
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if(!this.player.playerName) {
-      return this.router.parseUrl('/login');
+    const storageMaster = localStorage.getItem('master');
+    const isMaster = storageMaster === 'true';
+    if(!isMaster && !!this.player.playerName) {
+      return this.router.parseUrl('');
+    } else if(!isMaster) {
+      return this.router.parseUrl('login');
     }
     return true;
   }

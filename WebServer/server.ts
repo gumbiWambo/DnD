@@ -37,10 +37,13 @@ wssCharacter.on('connection', (ws: WebSocket, request) => {
     } else {
       ws.close();
     }
+    return;
   }
-  if(playerName) {
+  
+  if(playerName && !queryParams.master) {
+    console.log(playerName + ' connected.');
     characterManager.addPlayerConnection(playerName, ws);
-  } else if(!!queryParams.master) {
+  } else if(!!playerName && !!queryParams.master && queryParams.master === 'true') {
     characterManager.setMasterConnection(ws);
   }
 
@@ -50,7 +53,14 @@ wssTrade.on('connection', (ws: WebSocket) => {
 });
 
 app.get('/player', (req, res) => {
-  res.sendStatus(501);
+  const queryParams = getQueryParams(req.url);
+  if(!!queryParams && !!queryParams.name) {
+    database.getPlayer(queryParams.name).then(x => {
+      res.send({master: x.master}).sendStatus(200);
+    });
+  } else {
+    res.sendStatus(400);
+  }
 });
 app.post('/player', (req, res) => {
   res.sendStatus(405);

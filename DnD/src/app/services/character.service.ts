@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { WebsocketService } from './websocket.service';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { map, tap, share } from 'rxjs/operators';
+import { map, tap, share, filter } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -117,7 +117,7 @@ export class CharacterService {
   }
   public connect(playerName: string) {
     this.socket = this.webSocket.connect(environment.socketUrl + '?player=' + playerName);
-    const character = this.socket.pipe(map(x => JSON.parse(x.data)), share())
+    const character = this.socket.pipe(map(x => JSON.parse(x.data)), filter(x => !!x.name && !!x.class),  share())
     character.subscribe(
       next => {
         console.log(next);

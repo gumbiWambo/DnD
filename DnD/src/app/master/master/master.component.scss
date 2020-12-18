@@ -1,0 +1,72 @@
+:host{
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 20px repeat(12, 1fr);
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+  "input input input "
+  "cantrip level3 level6 "
+  "cantrip level3 level6 "
+  "cantrip level3 level6 "
+  "cantrip level3 level7 "
+  "level1 level4 level7 "
+  "level1 level4 level7 "
+  "level1 level4 level8 "
+  "level1 level4 level8 "
+  "level2 level5 level8 "
+  "level2 level5 level9 "
+  "level2 level5 level9 "
+  "level2 level5 level9 ";
+  height: 100%;
+  max-height: 100%;
+  .spell-list-container{
+    overflow-y: auto;
+    &::-webkit-scrollbar{
+      width: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      border-radius: 1px;
+      width: 2px;
+      background: rgb(0, 0, 0);
+    }
+    &::-webkit-scrollbar-thumb {
+      background: white;
+      border-radius: 1px;
+      width: 2px;
+    }
+  }
+  #cantripList {
+    grid-area: cantrip;
+  }
+  #level1List {
+    grid-area: level1;
+  }
+  #level2List {
+    grid-area: level2;
+  }
+  #level3List {
+    grid-area: level3;
+  }
+  #level4List {
+    grid-area: level4;
+  }
+  #level5List {
+    grid-area: level5;
+  }
+  #level6List {
+    grid-area: level6;
+  }
+  #level7List {
+    grid-area: level7;
+  }
+  #level8List {
+    grid-area: level8;
+  }
+  #level9List {
+    grid-area: level9;
+  }
+  input{
+    grid-area: input;
+  }
+}

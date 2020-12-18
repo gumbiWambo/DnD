@@ -42,7 +42,6 @@ export class MapManager {
         coords.y = 7;
         coords.x = 28;
       }
-      console.log(connection.playerName);
       this.creatureCoordinates.push(new CreatureCoordinate(connection.playerName, characterName, coords.x, coords.y, this.draw.getPlayerColor(connection.playerName)));
       this.prepareSocket(connection);
       this.connections.push(connection);

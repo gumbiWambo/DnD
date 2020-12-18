@@ -17,10 +17,24 @@ export class Database {
     }
     return database;
   }
+  public getPlayer(name: string): Promise<{name: string, master: boolean}> {
+    return new Promise((resolve, reject) => {
+      db.serialize(() => {
+        db.all(`SELECT * FROM Player WHERE Player.Name = '${name}'`, (error: any, row: any) => {
+          if(error) {
+            console.log(error);
+            reject(error);
+          } else {
+            resolve({name: row[0].Name, master: row[0].master});
+          }
+        });
+      });
+    });
+  }
   public insertPlayer(name: string): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
-      db.run(`INSERT INTO Player (Name)
-      VALUES ('${name}')`, (error: any) => {
+      db.run(`INSERT INTO Player (Name, master)
+      VALUES ('${name}', 0)`, (error: any) => {
         if(error) {
           reject(error);
         } else {
@@ -246,8 +260,6 @@ export class Database {
     });
   }
 
-
-  
 
   private isSecureStirng(guess: string): boolean {
     return !(guess.includes(';') || guess.includes('--') || guess.includes('DROP'));

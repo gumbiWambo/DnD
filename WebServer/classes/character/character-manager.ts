@@ -15,6 +15,7 @@ export class CharacterManager {
     return characterManager;
   }
   public setMasterConnection(ws: WebSocket) {
+    console.log('Master Connected');
     this.masterConnection = ws;
     this.masterConnection.on('close', () => this.removeMasterConnection());
     this.masterConnection.on('error', (error) => console.log(error));
@@ -26,15 +27,18 @@ export class CharacterManager {
         case 'setCurrency': this.setCurrency(commandFromSocket.playerName, commandFromSocket.currency, commandFromSocket.amount); break;
       }
     });
+    this.sendMasterConnection({type: 'playerList', data: this.connections.map(x => x.playerName)});
   }
   public addPlayerConnection(playerName: string, ws: WebSocket) {
     ws.on('close', () => {
       this.removePlayerConnection(playerName);
     });
     this.connections.push(new CharacterConnection(playerName, ws));
+    this.sendMasterConnection({type: 'playerList', data: this.connections.map(x => x.playerName)});
   }
   public removePlayerConnection(playerName: string) {
     this.connections.splice(characterManager.connections.findIndex(x => x.playerName === playerName), 1);
+    this.sendMasterConnection({type: 'playerList', data: this.connections.map(x => x.playerName)});
   }
   private removeMasterConnection() {
     if(this.masterConnection) {
@@ -56,5 +60,10 @@ export class CharacterManager {
   }
   private getConnection(playerName: string): CharacterConnection | undefined {
     return this.connections.find(x => x.playerName === playerName);
+  }
+  private sendMasterConnection<T>(content: T) {
+    if(!!this.masterConnection) {
+      this.masterConnection.send(JSON.stringify(content));
+    }
   }
 }
