@@ -527,7 +527,8 @@ export class Database {
       name: x.Name,
       description: x.Discription,
       amount: x.amount,
-      type: x.Type
+      type: x.Type,
+      properties: x.Properties
     }));
   }
 

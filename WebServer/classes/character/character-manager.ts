@@ -22,6 +22,7 @@ export class CharacterManager {
     this.masterConnection.on('message', (data: string) => {
       const commandFromSocket = JSON.parse(data);
       switch(commandFromSocket.command) {
+        case 'chooseCharacter': break;
         case 'addEquipment': this.addEquipment(commandFromSocket.playerName, commandFromSocket.equipment); break;
         case 'decreaseEquipment': this.decreaseEquipment(commandFromSocket.playerName, commandFromSocket.equipment); break;
         case 'setCurrency': this.setCurrency(commandFromSocket.playerName, commandFromSocket.currency, commandFromSocket.amount); break;

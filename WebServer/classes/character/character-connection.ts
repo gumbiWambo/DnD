@@ -1,8 +1,7 @@
 import * as WebSocket from 'ws';
 import { Character } from '../../interfaces/character';
-import { Backpack, Dagger, Equipment, Net, Ration, Rope, Scroll, SendingStone } from '../equipment/equipment';
+import {Equipment} from '../equipment/equipment';
 import { Database } from '../database';
-import { FinsterFrucht, GiraffenFrucht, MantelFrucht, ParamesiaFrucht, SwimSwimFriut, TrennTrennFrucht } from '../equipment/devil-friutes';
 
 export class CharacterConnection{
   public playerName: string = '';
@@ -101,7 +100,7 @@ export class CharacterConnection{
     }).catch(x => console.log(x));
   }
   private useEquipment(equipmentName: string): void {
-    const equipment = new Equipment(equipmentName, 1, '', '');
+    const equipment = new Equipment(equipmentName, 1, '', '', '');
     this.decreaseEquipment(equipment);
   }
   public updateCurrency(currency: string, value: number): void {

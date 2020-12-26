@@ -1,3 +1,4 @@
+
 <dnd-tab-control>
   <div dndTab="Spells">
     <input type="text" placeholder="Search for a spell..." [(ngModel)]="spellSearchTerm">
@@ -33,6 +34,9 @@
     </div>
   </div>
   <div dndTab="Equipment">
+    <select name="" id="">
+      <option *ngFor="let player of players" value="player">{{player}}</option>
+    </select>
     <select name="" id="">
       <option *ngFor="let equipment of equipments" [value]="equipment.name">{{equipment.name}}</option>
     </select>

@@ -120,7 +120,6 @@ export class CharacterService {
     const character = this.socket.pipe(map(x => JSON.parse(x.data)), filter(x => !!x.name && !!x.class),  share())
     character.subscribe(
       next => {
-        console.log(next);
         this.character.next(next);
       },
       error => {
