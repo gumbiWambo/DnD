@@ -1,40 +1,47 @@
+@import '../../../variables.scss';
 :host{
+  background-color: $dnd-main-color-dark;
   width: 100vw;
   height: 100vh;
-  display: grid;
-  grid-template-rows: 20px repeat(12, 1fr);
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-areas:
-  "input input input "
-  "cantrip level3 level6 "
-  "cantrip level3 level6 "
-  "cantrip level3 level6 "
-  "cantrip level3 level7 "
-  "level1 level4 level7 "
-  "level1 level4 level7 "
-  "level1 level4 level8 "
-  "level1 level4 level8 "
-  "level2 level5 level8 "
-  "level2 level5 level9 "
-  "level2 level5 level9 "
-  "level2 level5 level9 ";
-  height: 100%;
-  max-height: 100%;
-  .spell-list-container{
-    overflow-y: auto;
-    &::-webkit-scrollbar{
-      width: 4px;
-    }
-    &::-webkit-scrollbar-track {
-      border-radius: 1px;
-      width: 2px;
-      background: rgb(0, 0, 0);
-    }
-    &::-webkit-scrollbar-thumb {
-      background: white;
-      border-radius: 1px;
-      width: 2px;
-    }
+  dnd-tab-control{
+    background-color: $dnd-main-color-dark;
+  }
+  div[dndTab="Spells"] {
+    background-color: $dnd-main-color-dark;
+    display: grid;
+    grid-template-rows: 20px repeat(12, 1fr);
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas:
+    "input input input "
+    "cantrip level3 level6 "
+    "cantrip level3 level6 "
+    "cantrip level3 level6 "
+    "cantrip level3 level7 "
+    "level1 level4 level7 "
+    "level1 level4 level7 "
+    "level1 level4 level8 "
+    "level1 level4 level8 "
+    "level2 level5 level8 "
+    "level2 level5 level9 "
+    "level2 level5 level9 "
+    "level2 level5 level9 ";
+    height: 100%;
+    max-height: 100%;
+    .spell-list-container{
+      overflow-y: auto;
+      &::-webkit-scrollbar{
+        width: 4px;
+      }
+      &::-webkit-scrollbar-track {
+        border-radius: 1px;
+        width: 2px;
+        background: rgb(0, 0, 0);
+      }
+      &::-webkit-scrollbar-thumb {
+        background: white;
+        border-radius: 1px;
+        width: 2px;
+      }
   }
   #cantripList {
     grid-area: cantrip;
@@ -68,5 +75,6 @@
   }
   input{
     grid-area: input;
+  }
   }
 }

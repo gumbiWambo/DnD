@@ -4,6 +4,7 @@ import { MasterComponent } from './master/master.component';
 import { MasterRoutingModule } from './master-routing.module';
 import { SpellModule } from '../spell/spell.module';
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 
 
 
@@ -13,6 +14,7 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     MasterRoutingModule,
     SpellModule,
+    SharedModule,
     FormsModule
   ]
 })

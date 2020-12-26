@@ -1,31 +1,41 @@
-<input type="text" placeholder="Search for a spell..." [(ngModel)]="spellSearchTerm">
-<div class="spell-list-container" id="cantripList">
-  <dnd-spelllist  [spells]="spells" [searchTerm]="spellSearchTerm" [level]="0"></dnd-spelllist>
-</div>
-<div class="spell-list-container" id="level1List" >
-  <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="1"></dnd-spelllist>
-</div>
-<div class="spell-list-container" id="level2List">
-  <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="2"></dnd-spelllist>
-</div>
-<div class="spell-list-container" id="level3List">
-  <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="3"></dnd-spelllist>
-</div>
-<div class="spell-list-container" id="level4List">
-  <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="4"></dnd-spelllist>
-</div>
-<div class="spell-list-container" id="level5List">
-  <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="5"></dnd-spelllist>
-</div>
-<div class="spell-list-container" id="level6List">
-  <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="6"></dnd-spelllist>
-</div>
-<div class="spell-list-container" id="level7List">
-  <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="7"></dnd-spelllist>
-</div>
-<div class="spell-list-container" id="level8List">
-  <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="8"></dnd-spelllist>
-</div>
-<div class="spell-list-container" id="level9List">
-  <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="9"></dnd-spelllist>
-</div>
+<dnd-tab-control>
+  <div dndTab="Spells">
+    <input type="text" placeholder="Search for a spell..." [(ngModel)]="spellSearchTerm">
+    <div class="spell-list-container" id="cantripList">
+      <dnd-spelllist  [spells]="spells" [searchTerm]="spellSearchTerm" [level]="0"></dnd-spelllist>
+    </div>
+    <div class="spell-list-container" id="level1List" >
+      <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="1"></dnd-spelllist>
+    </div>
+    <div class="spell-list-container" id="level2List">
+      <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="2"></dnd-spelllist>
+    </div>
+    <div class="spell-list-container" id="level3List">
+      <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="3"></dnd-spelllist>
+    </div>
+    <div class="spell-list-container" id="level4List">
+      <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="4"></dnd-spelllist>
+    </div>
+    <div class="spell-list-container" id="level5List">
+      <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="5"></dnd-spelllist>
+    </div>
+    <div class="spell-list-container" id="level6List">
+      <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="6"></dnd-spelllist>
+    </div>
+    <div class="spell-list-container" id="level7List">
+      <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="7"></dnd-spelllist>
+    </div>
+    <div class="spell-list-container" id="level8List">
+      <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="8"></dnd-spelllist>
+    </div>
+    <div class="spell-list-container" id="level9List">
+      <dnd-spelllist [spells]="spells" [searchTerm]="spellSearchTerm" [level]="9"></dnd-spelllist>
+    </div>
+  </div>
+  <div dndTab="Equipment">
+    <select name="" id="">
+      <option *ngFor="let equipment of equipments" [value]="equipment.name">{{equipment.name}}</option>
+    </select>
+  </div>
+</dnd-tab-control>
+

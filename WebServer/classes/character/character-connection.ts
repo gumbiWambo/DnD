@@ -83,29 +83,13 @@ export class CharacterConnection{
     this.sendCharacter();
   }
   public addEquipment(equipment: Equipment) {
-    const equipments = this.character.equipment;
-    const foundEquipment = equipments.find(x => x.name === equipment.name);
-    if(!foundEquipment) {
-      equipments.push(equipment);
-    } else {
-      foundEquipment.amount += equipment.amount;
-    }
-    this.database.updateEquipment(this.character.player, this.character.name, equipments).then(x => {
+    this.database.addEquipment(this.character.player, this.character.name, equipment).then(x => {
       this.character = x;
       this.sendCharacter();
     });
   }
   public decreaseEquipment(equipment: Equipment) {
-    const equipments = this.character.equipment;
-    const index = equipments.findIndex((x) => x.name === equipment.name);
-    if(index > -1) {
-      if(equipments[index].amount <= equipment.amount) {
-        equipments.splice(index, 1);
-      } else {
-        equipments[index].amount -= equipment.amount
-      }
-    }
-    this.database.updateEquipment(this.character.player, this.character.name, equipments).then(x => {
+    this.database.decreaseEquipment(this.character.player, this.character.name, equipment).then(x => {
       this.character = x;
       this.sendCharacter();
     })
@@ -116,18 +100,9 @@ export class CharacterConnection{
       this.sendCharacter();
     }).catch(x => console.log(x));
   }
-  private useEquipment(equipment: string): void {
-    const foundEquipment = this.character.equipment.find(x => x.name === equipment);
-    if(!!foundEquipment) {
-      foundEquipment.amount -= 1;
-      if(foundEquipment.amount <= 0) {
-        this.character.equipment.splice(this.character.equipment.findIndex(x => x.name === equipment), 1);
-      }
-      this.database.updateEquipment(this.character.player, this.character.name, this.character.equipment).then(x => {
-        this.character = x;
-        this.sendCharacter();
-      });
-    }
+  private useEquipment(equipmentName: string): void {
+    const equipment = new Equipment(equipmentName, 1, '', '');
+    this.decreaseEquipment(equipment);
   }
   public updateCurrency(currency: string, value: number): void {
     let currencyUpdate: Promise<Character> = Promise.reject('woops');

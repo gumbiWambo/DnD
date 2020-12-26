@@ -2,6 +2,7 @@ import { Spell } from "../interfaces/spell";
 import { Character } from "../interfaces/character";
 import { Language } from "../interfaces/language";
 import { Equipment } from "./equipment/equipment";
+import { resolve } from "path";
 
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('database/dnd.db', (error: any) => {
@@ -16,6 +17,20 @@ export class Database {
       database = new Database();
     }
     return database;
+  }
+  public getEquipments(): Promise<Array<Equipment>> {
+    return new Promise((resolve, reject) => {
+      db.serialize(() => {
+        db.all(`SELECT Equipment.Name, Equipment.Discription, Equipment.Weight, Equipment.Price, EquipmentTypes.Name as Type, Equipment.Properties FROM Equipment
+        JOIN EquipmentTypes ON EquipmentTypes.key = Equipment.Type`, (error: any, row: Array<any>) => {
+          if(error) {
+            console.log('ERROR')
+            reject(error);
+          }
+          resolve(this.toEquipment(row));
+        });
+      });
+    });
   }
   public getPlayer(name: string): Promise<{name: string, master: boolean}> {
     return new Promise((resolve, reject) => {
@@ -201,6 +216,58 @@ export class Database {
       });
     });
   }
+  public async addEquipment(playerName: string,characterName: string, equipment: Equipment): Promise<Character> {
+    const equipmentFromChar = await this.getEquipmentForCharacter(characterName);
+    const equipmentExists: boolean = !!equipmentFromChar.find(x => x.name === equipment.name);
+    const updateQuery = `UPDATE CharacterEquipment SET Amount = Amount + ${equipment.amount}
+    WHERE 1 = 1
+    AND equipment IN (select Equipment.key from Equipment  Where Equipment.Name = '${equipment.name}')
+    AND character IN (
+    SELECT Character.key from Character
+    WHERE Character.Name = '${characterName}'
+    );`;
+    const insertQuery = `INSERT INTO characterEquipment (character, equipment, amount)
+    VALUES ((SELECT Character.Key FROM Character WHERE Character.Name = '${characterName}'),
+    (SELECT Equipment.key FROM Equipment WHERE Equipment.Name = '${equipment.name}'), ${equipment.amount});`;
+    return new Promise((resolve, reject) => {
+      db.run(!!equipmentExists? updateQuery : insertQuery, (error: any, row: any) => {
+        if(error) {
+          reject(error);
+        }
+        this.getCharacter(playerName).then(x => resolve(x));
+      })
+    });
+  }
+  public async decreaseEquipment(playerName: string, characterName: string, equipment: Equipment): Promise<Character> {
+    const equipmentFromChar = await this.getEquipmentForCharacter(characterName);
+    const existingEquipment = equipmentFromChar.find(x => x.name === equipment.name);
+    const updateQuery = `
+    UPDATE characterEquipment SET Amount = Amount - ${equipment.amount}
+    WHERE 1 = 1
+    AND equipment IN (select Equipment.key from Equipment  Where Equipment.Name = '${equipment.name}')
+    AND character IN (
+    SELECT Character.key from Character
+    WHERE Character.Name = '${characterName}'
+    );`;
+  const deleteQuery = `
+  DELETE FROM CharacterEquipment 
+  WHERE character IN  (SELECT Character.Key FROM Character WHERE Character.Name = '${characterName}')
+  AND equipment IN (SELECT Equipment.key FROM Equipment WHERE Equipment.Name = '${equipment.name}');`;
+    return new Promise((resolve, reject) => {
+      if(!!existingEquipment) {
+        const deleteIt = existingEquipment.amount <= equipment.amount
+        db.run(deleteIt ? deleteQuery : updateQuery, (error: any, row: any) => {
+          if(error) {
+            reject(error);
+          }
+          this.getCharacter(playerName).then(x => resolve(x))
+        });
+      } else {
+        reject('No equipment found');
+      }
+    });
+
+  }
 
   public updateEquipment(playerName: string, characterName: string, equipment: Equipment[]) {
     return new Promise<Character>(async (resolve, reject) => {
@@ -356,7 +423,7 @@ export class Database {
       spellCastingClass: row.SpellClass,
       hitpointMaximum: row.HitPointMaximum,
       tempoaryHitpoints: row.HitPointMaximum,
-      equipment: JSON.parse(row.Equipment),
+      equipment: await this.getEquipmentForCharacter(row.Name),
       proficiencyBonus: this.getProficiencyBonus(row.Experience),
       languages: await this.getCharacterLanguages(row.Race, row.Player),
       proficiencys: {
@@ -431,6 +498,37 @@ export class Database {
         });
       });
     })
+  }
+  private getEquipmentForCharacter(characterName: string): Promise<Array<Equipment>> {
+    return new Promise((resolve, reject) => {
+      db.serialize(() => {
+        db.all(`SELECT 
+        Amount,
+        Equipment.Name,
+        Equipment.Discription,
+        Equipment.Weight,
+        Equipment.Properties,
+        Equipment.Price,
+        EquipmentTypes.Name as Type
+        FROM CharacterEquipment
+        JOIN Character on Character.Key = CharacterEquipment.character AND Character.Name = '${characterName}'
+        JOIN Equipment on Equipment.key = CharacterEquipment.equipment
+        JOIN EquipmentTypes on EquipmentTypes.key = Equipment.Type`, (error: any, row: any[]) => {
+          if(error) {
+            reject(error)
+          }
+          resolve(this.toEquipment(row))
+        });
+      });
+    });
+  }
+  private toEquipment(rows: Array<any>): Equipment[] {
+    return rows.map(x => ({
+      name: x.Name,
+      description: x.Discription,
+      amount: x.amount,
+      type: x.Type
+    }));
   }
 
   private toSpells(rows: Array<any>): Spell[] {

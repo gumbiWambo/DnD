@@ -84,6 +84,11 @@ app.post('/spells', (req, res) => {
   //   res.sendStatus(200);
   // });
 });
+app.get('/equipments', (req, res) => {
+  database.getEquipments().then(x => {
+    res.send(JSON.stringify(x)).sendStatus(200);
+  }).catch(() => res.sendStatus(500));
+});
 app.get('/map/:name', (req, res) => {
   try{
     res.sendFile(__dirname + '/maps/' + req.params.name + '.html');
