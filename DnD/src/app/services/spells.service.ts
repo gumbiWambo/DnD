@@ -24,7 +24,7 @@ export class SpellsService {
     const query = !!this.spellClass ? '?class=' + this.spellClass : ''
     return this.http.get<Spell[]>(environment.serverUrl + '/spells' + query).pipe(tap((x) => this.spells.next(x))).toPromise();
   }
-  public createSpell(body: any): Promise<any> {
+  public createSpell(body: {name: string, level: number, type: string, castingTime: string, components: string, duration: string, discription: string, range: string}): Promise<any> {
     return this.http.post(environment.serverUrl + '/spells', body, {responseType: 'text'}).toPromise();
   }
   public createClassSpells(className: string, spells: string[]): Promise<void>{

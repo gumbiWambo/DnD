@@ -9,9 +9,12 @@
 <ng-template ngFor let-equipment [ngForOf]="character.equipment | sort">
   <ng-container [ngSwitch]="equipment.type">
     <dnd-scroll *ngSwitchCase="'scroll'" [name]="equipment.name" [message]="equipment.description" [language]="equipment.language"></dnd-scroll>
-    <dnd-thing *ngSwitchCase="'thing'" [name]="equipment.name" [description]="equipment.description" [amount]="equipment.amount"></dnd-thing>
-    <dnd-thing *ngSwitchCase="'weapon'" [name]="equipment.name" [description]="equipment.description" [amount]="equipment.amount"></dnd-thing>
-    <dnd-thing *ngSwitchCase="'Special Weapon'" [name]="equipment.name" [description]="equipment.description" [amount]="equipment.amount"></dnd-thing>
+    <dnd-thing *ngSwitchCase="'Thing'" [name]="equipment.name" [description]="equipment.description" [amount]="equipment.amount"></dnd-thing>
+    <dnd-thing *ngSwitchCase="'Simple Melee Weapons'" [name]="equipment.name" [description]="equipment.description" [amount]="equipment.amount"></dnd-thing>
+    <dnd-thing *ngSwitchCase="'Simple Ranged Weapons'" [name]="equipment.name" [description]="equipment.description" [amount]="equipment.amount"></dnd-thing>
+    <dnd-thing *ngSwitchCase="'Martial Melee Weapons'" [name]="equipment.name" [description]="equipment.description" [amount]="equipment.amount"></dnd-thing>
+    <dnd-thing *ngSwitchCase="'Martial Ranged Weapons'" [name]="equipment.name" [description]="equipment.description" [amount]="equipment.amount"></dnd-thing>
+    <dnd-thing *ngSwitchCase="'Generator'" [name]="equipment.name" [description]="equipment.description" [amount]="equipment.amount"></dnd-thing>
     <dnd-consumable *ngSwitchDefault  [name]="equipment.name" [amount]="equipment.amount" [description]="equipment.description" (use)="useEquipment($event)"></dnd-consumable>
   </ng-container>
 </ng-template>

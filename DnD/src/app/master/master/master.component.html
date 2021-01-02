@@ -1,6 +1,8 @@
 
 <dnd-tab-control>
   <div dndTab="Spells">
+    <button (click)="opend = true">Create Spell</button>
+    <dnd-create-spell *ngIf="opend"></dnd-create-spell>
     <input type="text" placeholder="Search for a spell..." [(ngModel)]="spellSearchTerm">
     <div class="spell-list-container" id="cantripList">
       <dnd-spelllist  [spells]="spells" [searchTerm]="spellSearchTerm" [level]="0"></dnd-spelllist>
@@ -34,12 +36,28 @@
     </div>
   </div>
   <div dndTab="Equipment">
-    <select name="" id="">
-      <option *ngFor="let player of players" value="player">{{player}}</option>
-    </select>
-    <select name="" id="">
-      <option *ngFor="let equipment of equipments" [value]="equipment.name">{{equipment.name}}</option>
-    </select>
+    <form #chooseCharacterForm="ngForm" (ngSubmit)="chooseCharacter(chooseCharacterForm)">
+      <select name="player" ngModel>
+        <option *ngFor="let player of players" [value]="player">{{player}}</option>
+      </select>
+      <button>Choose Player</button>
+    </form>
+    <form #addEquipment="ngForm" (ngSubmit)="updateEquipment(addEquipment)">
+      <input type="number" name="amount" ngModel>
+      <select name="equipmentName" ngModel>
+        <option *ngFor="let equipment of equipments" [value]="equipment.name">{{equipment.name}}</option>
+      </select>
+      <label for="removeCheckbox">Add/Remove</label><input type="checkbox" name="remove" ngModel id="removeCheckbox">
+      <button>Add/Remove</button>
+    </form>
+    <form *ngIf="character" #currencyForm="ngForm" (ngSubmit)="updateCurrency(currencyForm)">
+      <label for="copper">Copper</label><input [ngModel]="character.copperPieces" type="number" name="copper" id="copper">
+      <label for="silver">Silver</label><input [ngModel]="character.silverPieces" type="number" name="silver" id="silver">
+      <label for="electrum">Electrum</label><input [ngModel]="character.electrumPieces" type="number" name="electrum" id="electrum">
+      <label for="gold">Gold</label><input [ngModel]="character.goldPieces" type="number" name="gold" id="gold">
+      <label for="platin">Platin</label><input [ngModel]="character.platinPieces" type="number" name="platin" id="platin">
+      <button>Update Currency</button>
+    </form>
   </div>
 </dnd-tab-control>
 

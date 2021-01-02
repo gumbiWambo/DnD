@@ -3,6 +3,9 @@
   background-color: $dnd-main-color-dark;
   width: 100vw;
   height: 100vh;
+  input, option, select {
+    color: black !important;
+  }
   dnd-tab-control{
     background-color: $dnd-main-color-dark;
   }

@@ -4,6 +4,8 @@ import { SpelllistComponent } from './spelllist/spelllist.component';
 import { SpellComponent } from './spell/spell.component';
 import { SpellToStringPipe } from './spell/spell-to-string.pipe';
 import { SpellSearchPipe } from './pipes/spell-search.pipe';
+import { CreateSpellComponent } from './create-spell/create-spell.component';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -12,15 +14,18 @@ import { SpellSearchPipe } from './pipes/spell-search.pipe';
     SpelllistComponent,
     SpellComponent,
     SpellToStringPipe,
-    SpellSearchPipe
+    SpellSearchPipe,
+    CreateSpellComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule
   ],
   exports: [
     SpelllistComponent,
     SpellToStringPipe,
-    SpellSearchPipe
+    SpellSearchPipe,
+    CreateSpellComponent
   ]
 })
 export class SpellModule { }

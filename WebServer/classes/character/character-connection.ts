@@ -3,9 +3,11 @@ import { Character } from '../../interfaces/character';
 import {Equipment} from '../equipment/equipment';
 import { Database } from '../database';
 
+
 export class CharacterConnection{
   public playerName: string = '';
   public socket: WebSocket;
+  public characterChanged: (x :Character) => void = (x: Character) => {};
   private database = Database.getInstance();
   public character: Character = {
     name: '',
@@ -119,6 +121,7 @@ export class CharacterConnection{
     }).catch((x) => console.log(x));
   }
   private sendCharacter() {
+    this.characterChanged(this.character);
     this.socket.send(JSON.stringify(this.character));
   }
 }

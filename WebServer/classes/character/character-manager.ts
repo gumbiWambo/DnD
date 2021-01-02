@@ -1,10 +1,12 @@
 import * as WebSocket from 'ws';
+import { Character } from '../../interfaces/character';
 import { Equipment } from '../equipment/equipment';
 import { CharacterConnection } from "./character-connection";
 
 let characterManager: CharacterManager
 export class CharacterManager {
   private masterConnection: WebSocket | null = null;
+  private choosenChar: string | null = null;
   public connections: CharacterConnection[] = [];
   constructor() {}
 
@@ -21,8 +23,9 @@ export class CharacterManager {
     this.masterConnection.on('error', (error) => console.log(error));
     this.masterConnection.on('message', (data: string) => {
       const commandFromSocket = JSON.parse(data);
+      console.log(commandFromSocket);
       switch(commandFromSocket.command) {
-        case 'chooseCharacter': break;
+        case 'chooseCharacter': this.chooseCharacter(commandFromSocket.playerName); break;
         case 'addEquipment': this.addEquipment(commandFromSocket.playerName, commandFromSocket.equipment); break;
         case 'decreaseEquipment': this.decreaseEquipment(commandFromSocket.playerName, commandFromSocket.equipment); break;
         case 'setCurrency': this.setCurrency(commandFromSocket.playerName, commandFromSocket.currency, commandFromSocket.amount); break;
@@ -40,6 +43,22 @@ export class CharacterManager {
   public removePlayerConnection(playerName: string) {
     this.connections.splice(characterManager.connections.findIndex(x => x.playerName === playerName), 1);
     this.sendMasterConnection({type: 'playerList', data: this.connections.map(x => x.playerName)});
+  }
+  private chooseCharacter(playerName: string) {
+    console.log(playerName);
+    if(this.choosenChar) {
+      const connection = this.connections.find(x => x.playerName === this.choosenChar);
+      if(connection) {
+        connection.characterChanged = (x: Character) => {};
+      }
+      this.choosenChar = null;
+    }
+    const connection = this.connections.find(x => x.playerName === playerName)
+    if(!!connection) {
+      this.choosenChar = playerName;
+      connection.characterChanged = x => this.sendMasterConnection<any>({type: 'character', data: x});
+      this.sendMasterConnection<any>({type: 'character', data: connection.character});
+    }
   }
   private removeMasterConnection() {
     if(this.masterConnection) {

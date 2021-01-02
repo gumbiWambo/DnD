@@ -81,13 +81,11 @@ export class MasterService {
   }
   public connect(playerName: string) {
     this.socket = this.webSocket.connect(environment.socketUrl + '?player=' + playerName + '&master=true');
-    const playersOnline = this.socket.pipe(map(x => JSON.parse(x.data))).subscribe(x => {
+    this.socket.pipe(map(x => JSON.parse(x.data))).subscribe(x => {
       switch(x.type) {
         case 'playerList': this.players.next(x.data); break;
         case 'character': this.character.next(x.data); break;
       }
     });
-    // const choosenCharacter = this.socket.pipe(share());
-    // choosenCharacter.pipe(map(x => JSON.parse(x.data)), filter(x => x.type === 'character')).subscribe(x => this.character.next(x));
   }
 }

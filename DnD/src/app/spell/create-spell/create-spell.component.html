@@ -1,0 +1,11 @@
+<form #createSpell="ngForm" (ngSubmit)="insertSpell(createSpell)">
+  <label for="spellName">Name: </label><input placeholder="Name" type="text" ngModel name="name" id="spellName">
+  <label for="level">Level</label><input placeholder="1, 2, 3" type="number" ngModel name="level" id="level">
+  <label for="type">Type</label><input placeholder="conjuration" type="text" ngModel name="type" id="type">
+  <label for="castingTime">Casting Time</label><input placeholder="1 action, 3 hours" type="text" ngModel name="castingTime" id="castingTime">
+  <label for="components">Components</label><input placeholder="V, S, M" type="text" ngModel name="components" id="components">
+  <label for="duration">Duration</label><input placeholder="1 round, Instantaneous" type="text" ngModel name="duration" id="duration">
+  <label for="range">Range</label><input placeholder="10 feet, 5 feet, 1 mile" type="text" ngModel name="range" id="range">
+  <label for="Discription">Discription</label><textarea placeholder="Discription..." ngModel name="discription" id="discription" cols="30" rows="10"></textarea>
+  <button>Create</button>
+</form>

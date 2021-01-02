@@ -76,13 +76,13 @@ app.get('/spells', (req, res) => {
   }).catch(() => res.sendStatus(500));
 });
 app.post('/spells', (req, res) => {
-  res.sendStatus(405);
-  // database.insertSpell(req.body.name, req.body.level, req.body.type, req.body.castingTime, req.body.components, req.body.duration, req.body.discription, req.body.range).catch(() => {
-  //   res.sendStatus(500);
-  // }).then(() => {
-  //   console.log('woop');
-  //   res.sendStatus(200);
-  // });
+  // res.sendStatus(405);
+  database.insertSpell(req.body.name, req.body.level, req.body.type, req.body.castingTime, req.body.components, req.body.duration, req.body.discription, req.body.range).catch(() => {
+    res.sendStatus(500);
+  }).then(() => {
+    console.log('woop');
+    res.sendStatus(200);
+  });
 });
 app.get('/equipments', (req, res) => {
   database.getEquipments().then(x => {
