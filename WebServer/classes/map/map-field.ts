@@ -19,7 +19,6 @@ export class DungonCampFire extends MapField{
     super('dungonGroundCampFire', true, 5);
   }
 }
-
 export class DungonDoor extends MapField {
   constructor(private opened = false) {
     super('dungonDoor' + (opened ? 'Opened' : 'Closed'), opened, 5);

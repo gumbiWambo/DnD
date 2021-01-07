@@ -1,6 +1,6 @@
 import { CharacterManager } from '../character/character-manager';
 import { DrawConnectionMagager } from '../draw/draw-connection-manager';
-import { CreatureCoordinate } from './creature-coordinate';
+import { PlayerCoordinate } from './creature-coordinate';
 import { MapConnection } from './map-connection';
 import { MapDrawer } from './map-drawer';
 import { DungonCampFire, DungonDoor, DungonGround, DungonLever, DungonWall, MapField } from './map-field';
@@ -10,7 +10,7 @@ export class MapManager {
   private characterManager: CharacterManager = CharacterManager.getInstance();
   private map: MapField[][] = [];
   private connections: MapConnection[] = [];
-  private creatureCoordinates: CreatureCoordinate[] = [];
+  private creatureCoordinates: PlayerCoordinate[] = [];
   private mapDrawer: MapDrawer;
   constructor(){
     this.mapDrawer = new MapDrawer(this.map);
@@ -32,17 +32,7 @@ export class MapManager {
     } else {
       const characterName = this.characterManager.connections.find(x => x.playerName == connection.playerName)?.character.name ?? '';
       const coords = {x: 1, y: 1};
-      if(characterName === 'Shaobo') {
-        coords.y = 7;
-      } else if(characterName === 'Lio Reynisson') {
-        coords.y = 14;
-      } else if(characterName === 'Don Quichotte Amber') {
-        coords.y = 21;
-      } else if(connection.playerName === 'Leo') {
-        coords.y = 7;
-        coords.x = 28;
-      }
-      this.creatureCoordinates.push(new CreatureCoordinate(connection.playerName, characterName, coords.x, coords.y, this.draw.getPlayerColor(connection.playerName)));
+      this.creatureCoordinates.push(new PlayerCoordinate(connection.playerName, characterName, coords.x, coords.y, this.draw.getPlayerColor(connection.playerName)));
       this.prepareSocket(connection);
       this.connections.push(connection);
     }
