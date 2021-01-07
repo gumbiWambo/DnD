@@ -2,7 +2,6 @@ import { Spell } from "../interfaces/spell";
 import { Character } from "../interfaces/character";
 import { Language } from "../interfaces/language";
 import { Equipment } from "./equipment/equipment";
-import { resolve } from "path";
 
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('database/dnd.db', (error: any) => {
@@ -221,14 +220,14 @@ export class Database {
     const equipmentExists: boolean = !!equipmentFromChar.find(x => x.name === equipment.name);
     const updateQuery = `UPDATE CharacterEquipment SET Amount = Amount + ${equipment.amount}
     WHERE 1 = 1
-    AND equipment IN (select Equipment.key from Equipment  Where Equipment.Name = '${equipment.name}')
+    AND equipment IN (select Equipment.key from Equipment  Where Equipment.Name = "${equipment.name}")
     AND character IN (
     SELECT Character.key from Character
     WHERE Character.Name = '${characterName}'
     );`;
     const insertQuery = `INSERT INTO characterEquipment (character, equipment, amount)
     VALUES ((SELECT Character.Key FROM Character WHERE Character.Name = '${characterName}'),
-    (SELECT Equipment.key FROM Equipment WHERE Equipment.Name = '${equipment.name}'), ${equipment.amount});`;
+    (SELECT Equipment.key FROM Equipment WHERE Equipment.Name = "${equipment.name}"), ${equipment.amount});`;
     return new Promise((resolve, reject) => {
       db.run(!!equipmentExists? updateQuery : insertQuery, (error: any, row: any) => {
         if(error) {
