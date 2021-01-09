@@ -1,2 +1,2 @@
 <p (click)="opend = !opend">{{amount}} x {{name}}</p><button (click)="use.emit(name)">Use {{name}}</button>
-<p *ngIf="opend">{{description}}</p>
+<p *ngIf="opend" [innerHTML]="description"></p>
