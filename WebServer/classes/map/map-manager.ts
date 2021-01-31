@@ -86,17 +86,6 @@ export class MapManager {
   private drawContent() {
 
   }
-  private drawCellLeft(offsetX: number = 0, offsetY: number = 0) {
-    this.mapDrawer.drawHorizontalWall(1 + offsetX, 6 + offsetX, 4 + offsetY);
-    this.mapDrawer.drawHorizontalWall(1 + offsetX, 6 + offsetX, 10 + offsetY);
-    this.mapDrawer.drawVerticalWall(4 + offsetY, 10 + offsetY, 6 + offsetX);
-  }
-  private drawCellRight(offsetX: number = 0, offsetY: number = 0) {
-    this.mapDrawer.drawHorizontalWall(23 + offsetX, 28 + offsetX, 4 + offsetY)
-    this.mapDrawer.drawHorizontalWall(23 + offsetX, 28 + offsetX, 10 + offsetY)
-    this.mapDrawer.drawVerticalWall(4 + offsetY, 10 + offsetY, 23 + offsetX);
-  }
-
   private sendCreatureCoordinates() {
     this.sendAll(JSON.stringify({type: 'coordinates', data: this.creatureCoordinates}))
   }
