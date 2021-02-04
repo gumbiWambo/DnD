@@ -30,7 +30,7 @@ export class MapService {
       if(x.type === 'map') {
         this.map.next(x.data)
       } else if (x.type === 'coordinates') {
-        
+        console.log('coords', x.data);
         this.creaturePositions.next(x.data)
  
       }

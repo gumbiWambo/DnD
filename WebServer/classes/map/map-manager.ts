@@ -1,22 +1,26 @@
 import { CharacterManager } from '../character/character-manager';
 import { DrawConnectionMagager } from '../draw/draw-connection-manager';
-import { PlayerCoordinate } from './creature-coordinate';
+import { CreatureCoordinate, PlayerCoordinate } from './creature-coordinate';
+import { Map } from './map';
 import { MapConnection } from './map-connection';
-import { MapDrawer } from './map-drawer';
-import { DungonCampFire, DungonDoor, DungonGround, DungonLever, DungonWall, MapField } from './map-field';
+import { MapTransition } from './map.transition';
+import { filter, map } from 'rxjs/operators';
 let mapManager: MapManager;
 export class MapManager {
   private draw = DrawConnectionMagager.getInstance();
   private characterManager: CharacterManager = CharacterManager.getInstance();
-  private map: MapField[][] = [];
+  private maps: Map[] = [];
+  private mapTransitions: MapTransition[] = [];
   private connections: MapConnection[] = [];
   private creatureCoordinates: PlayerCoordinate[] = [];
-  private mapDrawer: MapDrawer;
-  constructor(){
-    this.mapDrawer = new MapDrawer(this.map);
-    this.mapDrawer.initiate(31, 31);
-    this.mapDrawer.drawBorder();
+  constructor() {
+    this.maps.push(new Map('main'));
+    this.maps.push(new Map('LeftChamber'));
+    this.mapTransitions.push(new MapTransition('main', 8, 7,'LeftChamber', 1, 1));
+
+    // this.maps[0].drawer.drawBorder();
     this.drawContent();
+    this.subscribeTransitions();
   }
   public static getInstance(): MapManager {
     if(!mapManager) {
@@ -30,14 +34,18 @@ export class MapManager {
     if(!!foundConnection) {
       connection.socket.close();
     } else {
-      const characterName = this.characterManager.connections.find(x => x.playerName == connection.playerName)?.character.name ?? '';
-      const coords = {x: 1, y: 1};
-      this.creatureCoordinates.push(new PlayerCoordinate(connection.playerName, characterName, coords.x, coords.y, this.draw.getPlayerColor(connection.playerName)));
       this.prepareSocket(connection);
       this.connections.push(connection);
     }
-    this.sendCreatureCoordinates();
-    this.sendMap();
+    const mainMap = this.maps.find(x => x.id === 'main');
+    if(!!mainMap) {
+      const characterName = this.characterManager.connections.find(x => x.playerName === connection.playerName)?.character.name ?? '';
+      const coords = {x: 1, y: 1};
+      mainMap.addCreatureCoordinate(new PlayerCoordinate(connection.playerName, characterName, coords.x, coords.y, this.draw.getPlayerColor(connection.playerName)));
+      this.loadMapForConnection(connection, mainMap.id);
+      this.sendCreatureCoordinates(mainMap);
+      this.sendMap(mainMap);
+    }
   }
   public removeConnection(playerName: string) {
     const connectionIndex = this.connections.findIndex(x => x.playerName === playerName);
@@ -48,6 +56,47 @@ export class MapManager {
     }
     if(coordinatesIndex > -1) {
       this.creatureCoordinates.splice(coordinatesIndex, 1);
+    }
+  }
+  private subscribeTransitions() {
+    this.maps.forEach(map => {
+      map.coordinateUpdate.pipe(filter(coordinates => coordinates.length > 0)).subscribe(coordinates => {
+        coordinates.forEach(coordinate => {
+          const firstMapTransition = this.mapTransitions.find(transition => map.id === transition.first.id && transition.first.x === coordinate.x && transition.first.y === coordinate.y);
+          const secondMapTransition = this.mapTransitions.find(transition => map.id === transition.second.id && transition.second.x === coordinate.x && transition.second.y === coordinate.y);
+          if(!!firstMapTransition) {
+            // to Second
+            this.transferFromMapToMap(coordinate, firstMapTransition, map.id, firstMapTransition.second.id);
+          } else if (!!secondMapTransition) {
+            // to First
+            this.transferFromMapToMap(coordinate, secondMapTransition, map.id, secondMapTransition.first.id);
+          }
+        });
+      })
+    });
+  }
+  private transferFromMapToMap(coordinate: CreatureCoordinate, transition: MapTransition, idOld: string, idNew: string) {
+    const oldMap = this.maps.find(x => x.id === idOld);
+    const newMap = this.maps.find(x => x.id === idNew);
+    if(oldMap) {
+      const coord = oldMap.removeCreatureCoordinates(coordinate.characterName);
+      if(!!coord && newMap) {
+        if(transition.first.id === idNew) {
+          coord.x = transition.first.x;
+          coord.y = transition.first.y;
+        } else {
+          coord.x = transition.second.x;
+          coord.y = transition.second.y;
+        }
+        newMap.addCreatureCoordinate(coord);
+        if(coordinate instanceof PlayerCoordinate) {
+          const connection = this.connections.find(x => x.playerName === coordinate.playerName);
+          if(connection) {
+            console.log('Transition Triggered !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+            this.loadMapForConnection(connection, idNew);
+          }
+        }
+      }
     }
   }
 
@@ -68,126 +117,43 @@ export class MapManager {
 
   }
   private playerMessage(data: any, connection: MapConnection) {
+    const characterName = this.characterManager.connections.find(x => x.playerName == connection.playerName)?.character.name ?? ''
     switch(data.command) {
       case 'interact':
-      const position = this.creatureCoordinates.find(x => x.playerName === connection.playerName);
-      if(!!position) {
-        const withIn5Feet = this.within5Feet(position?.x, position?.y, data.coordinates.x, data.coordinates.y);
-        if(!!withIn5Feet && !!this.map[data.coordinates.y][data.coordinates.x].interact()) {
-          this.sendMap();
-        }
-      }
+        connection.loadedMap?.interact(characterName, data);
       break;
       case 'walk':
-        this.walk(data.direction, connection.playerName);
+        connection.loadedMap?.walk(data.direction, characterName);
       break;
+    }
+  }
+  private loadMapForConnection(connection: MapConnection, id: string) {
+    const newMap = this.maps.find(x => x.id === id);
+    if(newMap) {
+      connection.unsubscribe();
+      connection.fieldUpdateSubscription = newMap.fieldUpdate.subscribe(() => this.sendMap(newMap))
+      connection.coordinateUpdateSubscription = newMap.coordinateUpdate.subscribe(() => this.sendCreatureCoordinates(newMap))
+      connection.loadNewMap(newMap);
+      this.sendMap(newMap);
+      this.sendCreatureCoordinates(newMap);
     }
   }
   private drawContent() {
-
+    this.maps[0].drawer.initiate(31, 31);
+    this.maps[0].drawer.setLever(12, 7, (x) => {this.maps[0].drawer.drawBorder(); return true;}, (x) => {this.maps[0].drawer.drawHorizontalWall(10, 20, 10); return true; });
+    this.maps[0].drawer.setDoor(8, 7, false, false);
+    this.maps[1].drawer.initiate(50, 50);
+    this.maps[1].drawer.drawBorder();
   }
-  private sendCreatureCoordinates() {
-    this.sendAll(JSON.stringify({type: 'coordinates', data: this.creatureCoordinates}))
+  private sendCreatureCoordinates(map: Map) {
+    this.sendToSameMap(map, JSON.stringify({type: 'coordinates', data: map.creatureCoordinates}))
   }
-  private sendMap() {
-    this.sendAll(JSON.stringify({type: 'map', data: this.map}))
+  private sendMap(map: Map) {
+    this.sendToSameMap(map, JSON.stringify({type: 'map', data: map.fields}))
   }
-  private sendAll(data: string) {
-    this.connections.forEach(x => {
-      x.socket.send(data);
-    });
-  }
-  private walk(data: 'west' | 'east' | 'north' | 'south' | 'westNorth' | 'eastNorth' | 'westSouth' | 'eastSouth', creatureName: string) {
-    if(!this.checkMovementIsPossible(data, creatureName)) {
-      return;
-    }
-    const connection = this.connections.find(x => x.playerName === creatureName);
-    if(!!connection) {
-      connection.setTemporarySpeed(connection.temporarySpeed - 5);
-    }
-    const actualPosition = this.creatureCoordinates.find(x => x.playerName === creatureName);
-    if(!!actualPosition) {
-      switch(data) {
-        case 'west': 
-          actualPosition.x -= 1;
-        break;
-        case 'east': 
-          actualPosition.x += 1;
-        break;
-        case 'north':
-          actualPosition.y -= 1;
-        break;
-        case 'south':
-          actualPosition.y += 1;
-        break;
-        case 'westSouth':
-          actualPosition.y += 1;
-          actualPosition.x -= 1;
-        break;
-        case 'eastSouth':
-          actualPosition.y += 1;
-          actualPosition.x += 1;
-        break;
-        case 'westNorth':
-          actualPosition.y -= 1;
-          actualPosition.x -= 1;
-        break;
-        case 'eastNorth':
-          actualPosition.y -= 1;
-          actualPosition.x += 1;
-        break;
-        default: break;
-      }
-      this.sendCreatureCoordinates();
-    }
-  }
-  private checkMovementIsPossible(data: 'west' | 'east' | 'north' | 'south' | 'westNorth' | 'eastNorth' | 'westSouth' | 'eastSouth', creatureName: string): boolean {
-    const actualPosition = this.creatureCoordinates.find(x => x.playerName === creatureName);
-    if(!!actualPosition) {
-      switch(data) {
-        case 'west':
-          return !(actualPosition.x - 1 < -1)
-          && this.map[actualPosition.y][actualPosition.x - 1].passableTarain
-          && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x - 1) && (coord.y === actualPosition.y));
-        case 'east': 
-          return !(actualPosition.x + 1 > this.map[0].length)
-          && this.map[actualPosition.y][actualPosition.x + 1].passableTarain
-          && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x + 1) && (coord.y === actualPosition.y));
-        case 'north':
-          return !(actualPosition.y - 1 < -1)
-          && !!this.map[actualPosition.y - 1][actualPosition.x].passableTarain
-          && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x) && coord.y === (actualPosition.y - 1));
-        case 'south':
-          return !(actualPosition.y + 1 > this.map.length)
-          && !!this.map[actualPosition.y + 1][actualPosition.x].passableTarain
-          && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x) && coord.y === (actualPosition.y + 1));
-        case 'westNorth': 
-          return !(actualPosition.y - 1 < -1)
-          && !(actualPosition.x - 1 < -1)
-          && !!this.map[actualPosition.y - 1][actualPosition.x - 1].passableTarain
-          && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x - 1) && coord.y === (actualPosition.y - 1));
-        case 'eastNorth': 
-          return !(actualPosition.y - 1 < -1)
-          && !(actualPosition.x + 1 >= this.map[0].length)
-          && !!this.map[actualPosition.y - 1][actualPosition.x + 1].passableTarain
-          && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x + 1) && coord.y === (actualPosition.y - 1));
-        case 'eastSouth': 
-          return !(actualPosition.y + 1 > this.map.length)
-          && !(actualPosition.x + 1 >= this.map[0].length)
-          && !!this.map[actualPosition.y + 1][actualPosition.x + 1].passableTarain
-          && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x + 1) && coord.y === (actualPosition.y + 1));
-        case 'westSouth': 
-          return !(actualPosition.y + 1 > this.map.length)
-          && !(actualPosition.x - 1 < -1)
-          && !!this.map[actualPosition.y + 1][actualPosition.x - 1].passableTarain
-          && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x - 1) && coord.y === (actualPosition.y + 1));
-        default:
-          return false;
-      }
-    }
-    return false;
-  }
-  private within5Feet(x1: number, y1: number, x2: number, y2: number): boolean {
-    return Math.abs(x1 - x2) <= 1 && Math.abs(y1 - y2) <= 1;
+  private sendToSameMap(map: Map, data: string) {
+    this.connections.filter(x => x.loadedMap?.id === map.id).forEach(connection => {
+      connection.socket.send(data);
+    })
   }
 }

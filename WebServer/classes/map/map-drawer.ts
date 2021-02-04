@@ -1,7 +1,7 @@
 import { DungonCampFire, DungonDoor, DungonGround, DungonLever, DungonWall, MapField } from "./map-field";
 
 export class MapDrawer{
-  constructor(private map: MapField[][]){}
+  constructor(private map: MapField[][] = []){}
   public initiate(height: number, length: number) {
     for(let i = 0; i < height; ++i) {
       const y = [];
