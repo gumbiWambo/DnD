@@ -25,7 +25,7 @@ export class MasterComponent implements OnInit {
     this.spellProvider.getSpells();
     this.equipmentProvider.getEquipment().then(x => this.equipments = x);
     this.masterSocket.players.subscribe(x => this.players = x);
-    this.masterSocket.character.pipe(tap(console.log)).subscribe(x => this.character = x);
+    this.masterSocket.character.pipe().subscribe(x => this.character = x);
   }
 
   ngOnInit(): void {
