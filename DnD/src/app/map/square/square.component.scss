@@ -6,6 +6,11 @@
     border-style: dashed;
     border-color: red;
   }
+  &.on{
+    border-style: dotted;
+    border-color: green;
+    border-width: 3px;
+  }
   img{
     height: 100%;
     width: 100%;

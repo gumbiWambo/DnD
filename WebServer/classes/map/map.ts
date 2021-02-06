@@ -38,83 +38,82 @@ export class Map {
     }
   }
   public walk(data: 'west' | 'east' | 'north' | 'south' | 'westNorth' | 'eastNorth' | 'westSouth' | 'eastSouth', creatureName: string) {
-    if(!this.checkMovementIsPossible(data, creatureName)) {
-      return;
-    }
-    const actualPosition = this.creatureCoordinates.find(x => x.characterName === creatureName);
-    if(!!actualPosition) {
-      switch(data) {
-        case 'west': 
-          actualPosition.x -= 1;
-        break;
-        case 'east': 
-          actualPosition.x += 1;
-        break;
-        case 'north':
-          actualPosition.y -= 1;
-        break;
-        case 'south':
-          actualPosition.y += 1;
-        break;
-        case 'westSouth':
-          actualPosition.y += 1;
-          actualPosition.x -= 1;
-        break;
-        case 'eastSouth':
-          actualPosition.y += 1;
-          actualPosition.x += 1;
-        break;
-        case 'westNorth':
-          actualPosition.y -= 1;
-          actualPosition.x -= 1;
-        break;
-        case 'eastNorth':
-          actualPosition.y -= 1;
-          actualPosition.x += 1;
-        break;
-        default: break;
+    if(this.checkMovementIsPossible(data, creatureName)) {
+      const actualPosition = this.creatureCoordinates.find(x => x.characterName === creatureName);
+      if(!!actualPosition) {
+        switch(data) {
+          case 'west': 
+            actualPosition.x -= 1;
+          break;
+          case 'east': 
+            actualPosition.x += 1;
+          break;
+          case 'north':
+            actualPosition.y -= 1;
+          break;
+          case 'south':
+            actualPosition.y += 1;
+          break;
+          case 'westSouth':
+            actualPosition.y += 1;
+            actualPosition.x -= 1;
+          break;
+          case 'eastSouth':
+            actualPosition.y += 1;
+            actualPosition.x += 1;
+          break;
+          case 'westNorth':
+            actualPosition.y -= 1;
+            actualPosition.x -= 1;
+          break;
+          case 'eastNorth':
+            actualPosition.y -= 1;
+            actualPosition.x += 1;
+          break;
+          default: break;
+        }
       }
-      this.coordinateUpdate.next(this.creatureCoordinates);
     }
+    this.coordinateUpdate.next(this.creatureCoordinates);
   }
   private checkMovementIsPossible(data: 'west' | 'east' | 'north' | 'south' | 'westNorth' | 'eastNorth' | 'westSouth' | 'eastSouth', creatureName: string): boolean {
     const actualPosition = this.creatureCoordinates.find(x => x.characterName === creatureName);
     if(!!actualPosition) {
       switch(data) {
         case 'west':
-          return !(actualPosition.x - 1 < -1)
+          return !(actualPosition.x - 1 <= -1)
           && this.fields[actualPosition.y][actualPosition.x - 1].passableTarain
           && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x - 1) && (coord.y === actualPosition.y));
         case 'east': 
-          return !(actualPosition.x + 1 > this.fields[0].length)
+          return !(actualPosition.x + 1 >= this.fields[0].length)
           && this.fields[actualPosition.y][actualPosition.x + 1].passableTarain
           && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x + 1) && (coord.y === actualPosition.y));
         case 'north':
-          return !(actualPosition.y - 1 < -1)
+          return !(actualPosition.y - 1 <= -1)
           && !!this.fields[actualPosition.y - 1][actualPosition.x].passableTarain
           && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x) && coord.y === (actualPosition.y - 1));
         case 'south':
-          return !(actualPosition.y + 1 > this.fields.length)
+          return !(actualPosition.y + 1 >= this.fields.length)
           && !!this.fields[actualPosition.y + 1][actualPosition.x].passableTarain
           && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x) && coord.y === (actualPosition.y + 1));
         case 'westNorth': 
-          return !(actualPosition.y - 1 < -1)
-          && !(actualPosition.x - 1 < -1)
+          return !(actualPosition.y - 1 <= -1)
+          && !(actualPosition.x - 1 <= -1)
           && !!this.fields[actualPosition.y - 1][actualPosition.x - 1].passableTarain
           && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x - 1) && coord.y === (actualPosition.y - 1));
         case 'eastNorth': 
-          return !(actualPosition.y - 1 < -1)
+          return !(actualPosition.y - 1 <= -1)
           && !(actualPosition.x + 1 >= this.fields[0].length)
           && !!this.fields[actualPosition.y - 1][actualPosition.x + 1].passableTarain
           && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x + 1) && coord.y === (actualPosition.y - 1));
         case 'eastSouth': 
-          return !(actualPosition.y + 1 > this.fields.length)
+          return !(actualPosition.y + 1 >= this.fields.length)
           && !(actualPosition.x + 1 >= this.fields[0].length)
           && !!this.fields[actualPosition.y + 1][actualPosition.x + 1].passableTarain
           && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x + 1) && coord.y === (actualPosition.y + 1));
         case 'westSouth': 
-          return !(actualPosition.y + 1 > this.fields.length)
-          && !(actualPosition.x - 1 < -1)
+          return !(actualPosition.y + 1 >= this.fields.length)
+          && !(actualPosition.x - 1 <= -1)
           && !!this.fields[actualPosition.y + 1][actualPosition.x - 1].passableTarain
           && !this.creatureCoordinates.find(coord => coord.x === (actualPosition.x - 1) && coord.y === (actualPosition.y + 1));
         default:

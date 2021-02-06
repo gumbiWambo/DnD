@@ -28,9 +28,9 @@ export class MapService {
   private subscribeToSocket() {
     const dataObserver = this.socket.pipe(map(x => JSON.parse(x.data))).subscribe(x => {
       if(x.type === 'map') {
+        console.log('map', x.data);
         this.map.next(x.data)
       } else if (x.type === 'coordinates') {
-        console.log('coords', x.data);
         this.creaturePositions.next(x.data)
  
       }
