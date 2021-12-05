@@ -1,10 +1,10 @@
-import { CharacterManager } from '../character/character-manager';
-import { DrawConnectionMagager } from '../draw/draw-connection-manager';
 import { CreatureCoordinate, PlayerCoordinate } from './creature-coordinate';
 import { Map } from './map';
 import { MapConnection } from './map-connection';
 import { MapTransition } from './map.transition';
 import { filter, map } from 'rxjs/operators';
+import { DrawConnectionMagager } from '../../draw/draw-connection-manager';
+import { CharacterManager } from '../../character/character-manager';
 let mapManager: MapManager;
 export class MapManager {
   private draw = DrawConnectionMagager.getInstance();
@@ -34,7 +34,7 @@ export class MapManager {
       this.prepareSocket(connection);
       this.connections.push(connection);
     }
-    const mainMap = this.maps.find(x => x.id === 'main');
+    const mainMap = this.maps.find(x => x.id === 'mainHall');
     if(!!mainMap) {
       const characterName = this.characterManager.connections.find(x => x.playerName === connection.playerName)?.character.name ?? '';
       const coords = {x: 1, y: 1};

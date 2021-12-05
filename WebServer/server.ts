@@ -5,12 +5,12 @@ import * as bodyParser from 'body-parser';
 import { Database } from './classes/database';
 import { DrawConnectionMagager } from './classes/draw/draw-connection-manager';
 import { DrawConnection } from './classes/draw/draw-connection';
-import { MapManager } from './classes/map/map-manager';
-import { MapConnection } from './classes/map/map-connection';
 import { CharacterManager } from './classes/character/character-manager';
 import { SpellController } from './classes/controller/spell.controller';
 import { PlayerController } from './classes/controller/player.controller';
 import { EquipmentController } from './classes/controller/equipment.controller';
+import { MapManager } from './classes/map/dungeonMap/map-manager';
+import { MapConnection } from './classes/map/dungeonMap/map-connection';
 
 const app = express();
 app.use(function(req, res, next) {

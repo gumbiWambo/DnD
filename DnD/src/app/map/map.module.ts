@@ -5,11 +5,12 @@ import { HexComponent } from './hex/hex.component';
 import { SquareComponent } from './square/square.component';
 import { DrawDirective } from './draw/draw.directive';
 import { InsertCreatureInSquareDirective } from './insert-creature-in-square.directive';
+import { WorldComponent } from './world/world.component';
 
 
 
 @NgModule({
-  declarations: [MapComponent, HexComponent, SquareComponent, DrawDirective, InsertCreatureInSquareDirective],
+  declarations: [MapComponent, HexComponent, SquareComponent, DrawDirective, InsertCreatureInSquareDirective, WorldComponent],
   imports: [
     CommonModule
   ],
